@@ -1211,10 +1211,10 @@ async function savePendingPosterState() {
       finalDataURL: finalDataURL,
     };
     await idbSavePending(state);
-    return true;
+    return { ok: true };
   } catch (e) {
     console.error('Could not save poster state before checkout:', e);
-    return false;
+    return { ok: false, error: (e && e.message) ? e.message : String(e) };
   }
 }
 
@@ -1276,8 +1276,9 @@ async function startCheckout(priceId) {
   const errEl = document.getElementById('plans-error');
   errEl.style.display = 'none';
 
-  if (!(await savePendingPosterState())) {
-    errEl.textContent = 'Something went wrong preparing your poster. Please try again.';
+  const saveResult = await savePendingPosterState();
+  if (!saveResult.ok) {
+    errEl.textContent = `Could not prepare your poster (${saveResult.error}). Please try again.`;
     errEl.style.display = 'block';
     return;
   }
@@ -1295,6 +1296,10 @@ async function startCheckout(priceId) {
       },
       body: JSON.stringify({ priceId }),
     });
+    if (!res.ok) {
+      const bodyText = await res.text();
+      throw new Error(`Server returned ${res.status}: ${bodyText}`);
+    }
     const data = await res.json();
     if (!data.url) throw new Error(data.error || 'No checkout URL returned');
     window.location.href = data.url;
