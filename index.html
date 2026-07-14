@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Make your kid the hero of their own poster. Photo to personalised poster in 30 seconds">
+  <meta name="theme-color" content="#050505">
+
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192x192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+
+  <title>30secPosters | Photo to personalised poster in 30 seconds</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --panel: #111111;
+      --panel-2: #171717;
+      --text: #ffffff;
+      --muted: #a7a7a7;
+      --yellow: #FFD700;
+      --yellow-dark: #E0BD00;
+      --cyan: #00D5FF;
+      --border: #292929;
+      --max-width: 1180px;
+      --radius: 20px;
+      --section-gap: 48px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(0, 213, 255, 0.11), transparent 30rem),
+        var(--bg);
+      color: var(--text);
+      font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    img,
+    video {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .site-shell {
+      width: min(100%, var(--max-width));
+      margin: 0 auto;
+      padding-inline: 20px;
+    }
+
+    .primary-cta:active {
+      background: var(--yellow-dark);
+      transform: translateY(1px);
+    }
+
+    .hero {
+      text-align: center;
+      padding: 8px 0 0;
+    }
+
+
+    .hero-logo {
+      width: min(48vw, 240px);
+      height: auto;
+      margin: 0 auto 20px;
+    }
+
+    .hero h1 {
+      max-width: 870px;
+      margin: 0 auto;
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(48px, 10vw, 86px);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--yellow);
+    }
+
+    .hero-tagline {
+      margin: 14px auto 0;
+      max-width: 620px;
+      font-size: clamp(20px, 4vw, 30px);
+      line-height: 1.08;
+      font-weight: 800;
+    }
+
+    .hero-tagline .line {
+      display: block;
+    }
+
+    .hero-tagline strong {
+      color: var(--cyan);
+      font-size: 1.16em;
+    }
+
+    .primary-cta {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-width: min(100%, 340px);
+      margin-top: 0;
+      padding: 18px 26px;
+      border-radius: 14px;
+      background: var(--yellow);
+      color: #000;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 17px;
+      font-weight: 1000;
+      box-shadow: 0 16px 40px rgba(255, 215, 0, 0.14);
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .cta-zone {
+      display: flex;
+      justify-content: center;
+      padding-top: var(--section-gap);
+      padding-bottom: var(--section-gap);
+    }
+
+    .create-section {
+      margin-top: 0;
+      padding: 0;
+    }
+
+    .section-heading {
+      text-align: center;
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(36px, 7vw, 60px);
+      line-height: 1;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+
+    #create-heading {
+      white-space: nowrap;
+      font-size: clamp(40px, 10vw, 68px);
+    }
+
+    .carousel-wrap {
+      margin-top: 22px;
+      position: relative;
+    }
+
+    .poster-carousel {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, 46%);
+      gap: 12px;
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      scroll-snap-type: inline mandatory;
+      scrollbar-width: none;
+      padding: 0 20px 16px;
+      margin-inline: -20px;
+    }
+
+    .poster-carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .poster-card {
+      scroll-snap-align: start;
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--panel);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.36);
+      aspect-ratio: 3354 / 4743;
+    }
+
+    .poster-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .swipe-cue {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .swipe-cue span {
+      color: var(--cyan);
+      font-size: 19px;
+    }
+
+    .styles-note {
+      margin-top: 6px;
+      text-align: center;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .section {
+      margin-top: 0;
+      padding: 0;
+    }
+
+    .compact-section {
+      margin-top: 0;
+      padding: 0;
+    }
+
+    .skills-section,
+    .trust-section,
+    .final-cta {
+      margin-top: var(--section-gap);
+    }
+
+    .yellow-heading {
+      color: var(--yellow);
+      font-size: clamp(50px, 10.8vw, 82px);
+      line-height: 0.9;
+    }
+
+    .white {
+      color: #ffffff;
+    }
+
+    .yellow-text {
+      color: var(--yellow);
+    }
+
+    .cyan-text {
+      color: var(--cyan);
+    }
+
+    .demo-heading {
+      font-size: clamp(44px, 8.4vw, 72px);
+      line-height: 0.92;
+    }
+
+    .section-copy {
+      width: min(100%, 760px);
+      margin: 18px auto 0;
+      text-align: center;
+      color: #e9e9e9;
+      font-size: clamp(18px, 3.4vw, 25px);
+      line-height: 1.35;
+      font-weight: 750;
+    }
+
+    .simple-checklist {
+      margin: 18px auto 0;
+      max-width: 360px;
+      text-align: center;
+    }
+
+    .if-you-can,
+    .create-conclusion {
+      font-size: clamp(22px, 5.2vw, 29px);
+      font-weight: 900;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .if-you-can {
+      margin-bottom: 12px;
+    }
+
+    .check-list {
+      width: max-content;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    .check-line {
+      display: grid;
+      grid-template-columns: 26px auto;
+      align-items: center;
+      column-gap: 10px;
+      margin: 10px 0;
+      color: var(--yellow);
+      font-size: clamp(22px, 5.2vw, 29px);
+      font-weight: 900;
+      line-height: 1.2;
+      text-align: left;
+    }
+
+    .check-line .tick {
+      color: var(--yellow);
+      font-size: 1.05em;
+      font-weight: 900;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .create-conclusion {
+      margin-top: 14px;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .demo-shell {
+      position: relative;
+      width: min(70%, 274px);
+      margin: 16px auto 0;
+      padding: 10px;
+      border-radius: 38px;
+      background: linear-gradient(145deg, #2b2b2b, #0b0b0b);
+      border: 2px solid #494949;
+      box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.58),
+        inset 0 0 0 1px rgba(255,255,255,0.06);
+    }
+
+    .demo-shell::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 32%;
+      height: 22px;
+      border-radius: 999px;
+      background: #050505;
+      z-index: 2;
+    }
+
+    .demo-video {
+      width: 100%;
+      aspect-ratio: 874 / 1920;
+      object-fit: cover;
+      border-radius: 30px;
+      background: #000;
+    }
+
+    .trust-grid {
+      margin: 14px auto 0;
+      max-width: 430px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .trust-item {
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      align-items: start;
+      column-gap: 10px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      color: var(--yellow);
+      font-weight: 900;
+      font-size: clamp(19px, 4.6vw, 26px);
+      line-height: 1.18;
+      text-align: left;
+    }
+
+    .trust-icon {
+      color: var(--yellow);
+      font-size: 1em;
+      font-weight: 1000;
+      line-height: 1.18;
+      text-align: center;
+    }
+
+    .final-cta {
+      margin-top: var(--section-gap);
+      padding: 0;
+      text-align: center;
+      background: var(--bg);
+    }
+
+    .final-cta .section-heading {
+      font-size: clamp(54px, 12vw, 86px);
+      line-height: 0.9;
+    }
+
+    .site-footer {
+      margin-top: 0;
+      padding: 0 0 calc(18px + env(safe-area-inset-bottom));
+      color: var(--muted);
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .footer-links a {
+      color: var(--cyan);
+      font-size: 13px;
+      font-weight: 850;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .copyright {
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    @media (max-width: 760px) {
+      .site-shell {
+        padding-inline: 16px;
+      }
+
+
+      .poster-carousel {
+        grid-auto-columns: 46%;
+        margin-inline: -16px;
+        padding-inline: 16px;
+        gap: 9px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .footer-links {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 390px) {
+      .poster-carousel {
+        grid-auto-columns: 47%;
+      }
+
+      .hero-logo {
+        width: min(48vw, 240px);
+        margin-bottom: 20px;
+      }
+
+      .hero h1 {
+        font-size: clamp(48px, 10vw, 86px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!--
+    BEFORE LAUNCH:
+    1. Replace APP_URL below with the real app URL.
+    2. Carousel images are loaded from the /menu folder using the same filenames as the app.
+    3. Replace the demo placeholder with your real 30-second video.
+    4. Add terms.html and privacy.html.
+  -->
+
+
+  <main id="top">
+    <section class="hero">
+      <div class="site-shell">
+        <img class="hero-logo" src="logo.png" alt="30secPosters">
+        <h1><span class="white">Make your kid</span><br><span class="yellow-text">the hero</span><br><span class="white">of their own poster</span></h1>
+        <p class="hero-tagline">
+          <span class="line yellow-text">Photo to</span>
+          <span class="line yellow-text">personalised poster in</span>
+          <span class="line"><strong>30 seconds</strong></span>
+        </p>
+        <div class="cta-zone"><a class="primary-cta app-link" href="#">Start Creating Now</a></div>
+      </div>
+    </section>
+
+    <section class="create-section" aria-labelledby="create-heading">
+      <div class="site-shell">
+        <h2 class="section-heading" id="create-heading">What will you create?</h2>
+
+        <div class="carousel-wrap">
+          <div class="poster-carousel" aria-label="Poster style examples">
+            <article class="poster-card"><img src="menu/menu_superhero.jpg" alt="Superhero personalised poster example"></article>
+            <article class="poster-card"><img src="menu/menu_princess.jpg" alt="Princess personalised poster example"></article>
+            <article class="poster-card"><img src="menu/menu_stadium.jpg" alt="Stadium sports personalised poster example"></article>
+            <article class="poster-card"><img src="menu/menu_superhero_comic.jpeg" alt="Comic superhero personalised poster example"></article>
+            <article class="poster-card"><img src="menu/menu_winter_princess.jpg" alt="Winter princess personalised poster example"></article>
+          </div>
+          <p class="swipe-cue"><span>←</span> Swipe to see more <span>→</span></p>
+          <p class="styles-note">20+ poster styles and growing</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section skills-section" aria-labelledby="skills-heading">
+      <div class="site-shell">
+        <h2 class="section-heading yellow-heading" id="skills-heading">No design skills<br>needed</h2>
+
+        <div class="simple-checklist">
+          <p class="if-you-can">If you can</p>
+          <div class="check-list">
+            <p class="check-line"><span class="tick">✓</span><span>Upload a photo</span></p>
+            <p class="check-line"><span class="tick">✓</span><span>Type a name</span></p>
+          </div>
+          <p class="create-conclusion">You can create a poster</p>
+        </div>
+        <div class="center">
+          <div class="cta-zone"><a class="primary-cta app-link" href="#">Start Creating Now</a></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section compact-section" aria-labelledby="demo-heading">
+      <div class="site-shell center">
+        <h2 class="section-heading demo-heading" id="demo-heading">Watch a poster<br>be created in<br><span class="cyan-text">30 seconds</span></h2>
+
+        <div class="demo-shell">
+          <video class="demo-video" autoplay muted loop playsinline preload="metadata" aria-label="A personalised poster being created in under 30 seconds">
+            <source src="videos/30-second-demo.mp4" type="video/mp4">
+            Your browser does not support embedded video.
+          </video>
+        </div>
+      </div>
+    </section>
+
+    <section class="section compact-section trust-section" aria-labelledby="trust-heading">
+      <div class="site-shell">
+        <div class="trust-grid">
+          <div class="trust-item"><span class="trust-icon">✓</span><span>Unlimited posters</span></div>
+          <div class="trust-item"><span class="trust-icon">✓</span><span>Print-quality downloads</span></div>
+          <div class="trust-item"><span class="trust-icon">✓</span><span>No recurring subscriptions</span></div>
+          <div class="trust-item"><span class="trust-icon">✓</span><span>14 Day Money Back Guarantee</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="site-shell">
+        <h2 class="section-heading">Make your kid<br>the <span class="yellow-text">hero</span> today</h2>
+        <div class="cta-zone"><a class="primary-cta app-link" href="#">Start Creating Now</a></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-shell footer-inner">
+      <p class="copyright">© <span id="year"></span> 30secPosters. All rights reserved.</p>
+      <nav class="footer-links" aria-label="Legal and support links">
+        <a href="terms.html" target="_blank" rel="noopener noreferrer">Terms of Use</a>
+        <a href="privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+        <a href="mailto:support@30secposters.com">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    // Replace this with the final app URL before launch.
+    const APP_URL = "https://30secposters.com/app/";
+
+    document.querySelectorAll(".app-link").forEach((link) => {
+      link.href = APP_URL;
+    });
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+ const v=document.querySelector('.demo-video');
+ if(!v) return;
+ const io=new IntersectionObserver(entries=>{
+   entries.forEach(e=>{
+     if(e.isIntersecting){v.play().catch(()=>{});}
+     else{v.pause(); v.currentTime=0;}
+   });
+ },{threshold:0.6});
+ io.observe(v);
+});
+</script>
+</body>
+</html>
