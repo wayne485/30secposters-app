@@ -1292,6 +1292,23 @@ async function restorePendingPosterState() {
   if (!style) return false;
   currentStyle = style;
 
+  // The normal flow loads this style's font the moment it's picked
+  // (selectStyle), so by the time "Use This Position" is tapped it's
+  // already ready. On a fresh page load after returning from Stripe,
+  // that never happened - so the font has to be loaded here too,
+  // before any attempt to draw text, or canvas silently falls back to
+  // a default font instead of waiting for the real one.
+  if (!loadedFontFamilies.has(style.fontFamily)) {
+    try {
+      const fontFace = new FontFace(style.fontFamily, `url(${style.fontFile})`);
+      const loaded = await fontFace.load();
+      document.fonts.add(loaded);
+      loadedFontFamilies.add(style.fontFamily);
+    } catch (e) {
+      console.error('Font load failed during restore, will fall back to default:', e);
+    }
+  }
+
   document.getElementById('input-headline').value = state.headline || '';
   document.getElementById('input-subtitle').value = state.subtitle || '';
   document.getElementById('input-fill-color').value = state.fillColor || style.defaultFill;
