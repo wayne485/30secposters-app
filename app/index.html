@@ -136,7 +136,11 @@ button { font-family: inherit; }
 .plan-price span { font-size: 13px; color: #fff; font-weight: 700; }
 .plan-card ul { list-style: none; text-align: left; font-size: 13px; color: #fff; display: flex; flex-direction: column; gap: 4px; padding-left: 4px; }
 .plan-card ul li::before { content: "✔ "; color: #00D5FF; font-weight: 900; }
-.plan-card button { margin-top: 4px; }
+.plan-card button {
+  margin-top: 4px; width: 100%; padding: 16px;
+  border-radius: 12px; font-size: 15px; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; border: none;
+}
 #plans-error { color: #ff6b6b; font-size: 13px; text-align: center; display: none; }
 
 /* Tier colors: Starter = silver, Pro = brand gold (outlined), VIP = deeper premium gold */
