@@ -114,28 +114,31 @@ button { font-family: inherit; }
 #s-unlock .gold-line { color: #FFD700; }
 
 /* ---------- Pricing plans ---------- */
-#s-plans h2 { font-size: 22px; font-weight: 900; text-align: center; color: #00D5FF; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 2px; }
+#s-plans { gap: 14px; }
 .plans-line1 {
   font-size: 24px; font-weight: 900; text-align: center; text-transform: uppercase; letter-spacing: 0.02em;
-  color: #FFD700; text-shadow: 0 0 12px rgba(255,215,0,0.7); margin-bottom: 2px;
+  color: #FFC928; text-shadow: 0 0 12px rgba(255,201,40,0.55); margin-bottom: 0;
 }
 .plans-line2 {
   font-size: 19px; font-weight: 800; text-align: center; text-transform: uppercase; letter-spacing: 0.02em;
-  color: #00D5FF; text-shadow: 0 0 12px rgba(0,213,255,0.7); margin-bottom: 10px;
+  color: #00D5FF; text-shadow: 0 0 12px rgba(0,213,255,0.55); margin-bottom: 8px;
 }
 .plan-card {
   width: 100%; max-width: 420px; background: #141414; border: 2px solid #2a2a2a; border-radius: 16px;
   padding: 18px; display: flex; flex-direction: column; gap: 10px; text-align: center;
 }
 .plan-badge {
-  align-self: center; background: #FFD700; color: #000; font-size: 11px; font-weight: 900;
-  text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 12px; border-radius: 999px; margin-bottom: -4px;
+  align-self: center; background: #FFC928; color: #000; font-size: 11px; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 0.05em; padding: 5px 13px; border-radius: 999px; margin-bottom: -3px;
 }
-.plan-card h3 { font-size: 20px; font-weight: 900; text-transform: uppercase; color: #00D5FF; }
-.plan-price { font-size: 26px; font-weight: 900; }
-.plan-price span { font-size: 13px; color: #fff; font-weight: 700; }
-.plan-card ul { list-style: none; text-align: left; font-size: 13px; color: #fff; display: flex; flex-direction: column; gap: 4px; padding-left: 4px; }
-.plan-card ul li::before { content: "✔ "; color: #00D5FF; font-weight: 900; }
+.plan-card h3 { font-size: 20px; font-weight: 900; text-transform: uppercase; }
+.plan-price { font-size: 28px; font-weight: 900; color: #fff; }
+.plan-price span { font-size: 13px; font-weight: 800; }
+.plan-card ul {
+  list-style: none; text-align: left; font-size: 14px; color: #fff;
+  display: flex; flex-direction: column; gap: 6px; padding: 2px 0 2px 4px;
+}
+.plan-card ul li::before { content: "✔ "; font-weight: 900; }
 .plan-card button {
   margin-top: 4px; width: 100%; padding: 16px;
   border-radius: 12px; font-size: 15px; font-weight: 900;
@@ -143,23 +146,32 @@ button { font-family: inherit; }
 }
 #plans-error { color: #ff6b6b; font-size: 13px; text-align: center; display: none; }
 
-/* Tier colors: Starter = silver, Pro = brand gold (outlined), VIP = deeper premium gold */
-.plan-starter { border-color: #C0C0C0; }
-.plan-starter h3 { color: #C0C0C0; }
-.plan-starter .plan-price { color: #C0C0C0; }
-.plan-starter .plan-price span { color: #C0C0C0; }
-.plan-starter button { background: #C0C0C0; color: #000; }
-.plan-starter button:active { background: #A6A6A6; }
+/* Starter: deliberately quiet and entry-level */
+.plan-starter { border-color: #9CA3AF; }
+.plan-starter h3,
+.plan-starter .plan-price span { color: #9CA3AF; }
+.plan-starter ul li::before { color: #9CA3AF; }
+.plan-starter button { background: #9CA3AF; color: #000; }
+.plan-starter button:active { background: #858D99; }
 
-.plan-pro { border-color: #FFD700; }
-.plan-pro .plan-price { color: #FFD700; }
-.plan-pro button { background: transparent; border: 2px solid #FFD700; color: #FFD700; }
-.plan-pro button:active { background: rgba(255,215,0,0.15); color: #FFD700; }
+/* Pro: primary conversion target */
+.plan-pro {
+  max-width: 440px; padding: 24px 20px; border: 3px solid #FFC928;
+  box-shadow: 0 0 24px rgba(255,201,40,0.20);
+}
+.plan-pro h3,
+.plan-pro .plan-price span { color: #FFC928; }
+.plan-pro ul li::before { color: #FFC928; }
+.plan-pro button { background: #FFC928; color: #000; }
+.plan-pro button:active { background: #E5B51F; }
 
-.plan-vip { border-color: #D4AF37; }
-.plan-vip .plan-price { color: #D4AF37; }
-.plan-vip button { background: #D4AF37; color: #000; }
-.plan-vip button:active { background: #B8952E; }
+/* VIP: premium, but intentionally less dominant than Pro */
+.plan-vip { border-color: #C8A24A; }
+.plan-vip h3,
+.plan-vip .plan-price span { color: #C8A24A; }
+.plan-vip ul li::before { color: #C8A24A; }
+.plan-vip button { background: #C8A24A; color: #000; }
+.plan-vip button:active { background: #AE8B3D; }
 
 .loading-overlay {
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
@@ -317,8 +329,8 @@ button { font-family: inherit; }
     <h3>Starter</h3>
     <div class="plan-price">$9.95 <span>/ 30 Days</span></div>
     <ul>
-      <li>Unlimited posters for 30 days</li>
-      <li>Perfect for one-off gifts</li>
+      <li>Unlimited Posters</li>
+      <li>Access for 30 days</li>
     </ul>
     <button onclick="startCheckout('price_1TswegBZKyO9aacgfpabqTWg')">Choose Starter</button>
   </div>
@@ -328,20 +340,18 @@ button { font-family: inherit; }
     <h3>Pro</h3>
     <div class="plan-price">$29.95 <span>/ 6 Months</span></div>
     <ul>
-      <li>Unlimited posters for 6 months</li>
-      <li>Birthdays &amp; holiday gifts</li>
-      <li>Perfect for the sports season</li>
+      <li>Unlimited Posters</li>
+      <li>Access for 6 months</li>
     </ul>
     <button onclick="startCheckout('price_1TswfEBZKyO9aacghYaeSaqF')">Choose Pro</button>
   </div>
 
   <div class="plan-card plan-vip">
     <h3>VIP</h3>
-    <div class="plan-price">$47 <span>/ 12 Months</span></div>
+    <div class="plan-price">$59.95 <span>/ 12 Months</span></div>
     <ul>
-      <li>Unlimited posters for a whole year</li>
-      <li>Ideal for families &amp; coaches</li>
-      <li>Every birthday and holiday covered</li>
+      <li>Unlimited Posters</li>
+      <li>Access for 12 months</li>
     </ul>
     <button onclick="startCheckout('price_1TswfaBZKyO9aacgRlhsLAmj')">Choose VIP</button>
   </div>
