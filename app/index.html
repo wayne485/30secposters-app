@@ -226,10 +226,34 @@ button { font-family: inherit; }
      taller than the screen, it scrolls internally rather than clipping. */
   max-width: 92vw !important;
   max-height: 92vh !important;
-  overflow: auto !important;
-  -webkit-overflow-scrolling: touch !important;
+  /* Do not make the picker itself a momentum-scroll container. On older
+     iOS Safari that lets the whole popup rubber-band sideways/upwards when
+     the user is actually trying to drag inside the colour controls. */
+  overflow: hidden !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: auto !important;
   box-sizing: border-box !important;
 }
+
+/* The gradient square and hue rail are drag controls, not page-scroll areas.
+   Explicitly hand those gestures to Coloris and stop Safari treating them as
+   scrolling/panning gestures. This is intentionally limited to the controls
+   themselves so the rest of the page keeps its normal behaviour. */
+.clr-picker .clr-gradient,
+.clr-picker .clr-hue,
+.clr-picker .clr-alpha {
+  touch-action: none !important;
+  -ms-touch-action: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+}
+
+.clr-picker,
+.clr-picker * {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* Dim the background behind the picker so it's clearly a modal that needs
    closing - this also blocks taps from reaching buttons underneath (like
    Continue/Back) while the picker is open, which is the whole point of a
@@ -428,6 +452,18 @@ const CANVAS_W = 3354, CANVAS_H = 4743;
 // COLOR PICKER (Coloris) - full spectrum picker with hex input,
 // replaces the old native <input type="color"> swatch-limited picker.
 // ═══════════════════════════════════════════════════════
+// iOS Safari can interpret a drag on Coloris's gradient/hue controls as
+// scrolling the popup itself. Prevent the browser's default pan only while a
+// finger is actually moving on those controls. We do not stop propagation,
+// because Coloris still needs to receive the same touch event.
+document.addEventListener('touchmove', (event) => {
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+  if (target.closest('.clr-gradient, .clr-hue, .clr-alpha')) {
+    event.preventDefault();
+  }
+}, { passive: false, capture: true });
+
 Coloris({
   el: '.coloris-input',
   theme: 'polaroid',
