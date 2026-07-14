@@ -150,7 +150,7 @@
 
     #create-heading {
       white-space: nowrap;
-      font-size: clamp(31px, 8vw, 58px);
+      font-size: clamp(40px, 10vw, 68px);
     }
 
     .carousel-wrap {
@@ -161,7 +161,7 @@
     .poster-carousel {
       display: grid;
       grid-auto-flow: column;
-      grid-auto-columns: minmax(0, 40%);
+      grid-auto-columns: minmax(0, 46%);
       gap: 12px;
       overflow-x: auto;
       overscroll-behavior-inline: contain;
@@ -216,7 +216,7 @@
     }
 
     .section {
-      padding: 52px 0;
+      padding: 40px 0;
     }
 
     .yellow-heading {
@@ -245,8 +245,8 @@
 
     .simple-checklist {
       margin: 28px auto 0;
-      max-width: 430px;
-      text-align: left;
+      max-width: 520px;
+      text-align: center;
     }
 
     .if-you-can,
@@ -262,8 +262,8 @@
 
     .check-line {
       display: flex;
-      justify-content: flex-start;
-      align-items: flex-start;
+      justify-content: center;
+      align-items: center;
       gap: 12px;
       margin: 12px 0;
       color: var(--yellow);
@@ -325,7 +325,7 @@
     }
 
     .trust-grid {
-      margin: 22px auto 0;
+      margin: 14px auto 0;
       max-width: 430px;
       display: flex;
       flex-direction: column;
@@ -408,7 +408,7 @@
       }
 
       .poster-carousel {
-        grid-auto-columns: 40%;
+        grid-auto-columns: 46%;
         margin-inline: -16px;
         padding-inline: 16px;
         gap: 9px;
@@ -434,7 +434,7 @@
 
     @media (max-width: 390px) {
       .poster-carousel {
-        grid-auto-columns: 41%;
+        grid-auto-columns: 47%;
       }
 
       .hero-logo {
@@ -471,7 +471,7 @@
     <section class="hero">
       <div class="site-shell">
         <img class="hero-logo" src="logo.png" alt="30secPosters">
-        <h1>Make your kid the hero of their own poster</h1>
+        <h1><span class="white">Make your kid</span><br><span class="yellow-text">the hero of</span><br><span class="white">their own poster</span></h1>
         <p class="hero-tagline">
           <span class="line">Photo to</span>
           <span class="line">personalised poster in</span>
@@ -483,7 +483,7 @@
 
     <section class="create-section" aria-labelledby="create-heading">
       <div class="site-shell">
-        <h2 class="section-heading" id="create-heading">What will you create</h2>
+        <h2 class="section-heading" id="create-heading">What will you create?</h2>
 
         <div class="carousel-wrap">
           <div class="poster-carousel" aria-label="Poster style examples">
@@ -504,7 +504,7 @@
         <h2 class="section-heading yellow-heading" id="skills-heading">No design skills<br>needed</h2>
 
         <div class="simple-checklist">
-          <p class="if-you-can">If you can...</p>
+          <p class="if-you-can">If you can</p>
           <p class="check-line"><span class="tick">✓</span><span>Upload a photo</span></p>
           <p class="check-line"><span class="tick">✓</span><span>Type a name</span></p>
           <p class="create-conclusion">You can create a poster.</p>
@@ -517,7 +517,7 @@
 
     <section class="section" aria-labelledby="demo-heading">
       <div class="site-shell center">
-        <h2 class="section-heading" id="demo-heading">Watch a poster be created in <span class="cyan-text">30 seconds</span></h2>
+        <h2 class="section-heading" id="demo-heading">Watch a poster<br>be created in<br><span class="cyan-text">30 seconds</span></h2>
 
         <div class="demo-shell">
           <video class="demo-video" autoplay muted loop playsinline preload="metadata" aria-label="A personalised poster being created in under 30 seconds">
@@ -568,5 +568,19 @@
 
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+ const v=document.querySelector('.demo-video');
+ if(!v) return;
+ const io=new IntersectionObserver(entries=>{
+   entries.forEach(e=>{
+     if(e.isIntersecting){v.play().catch(()=>{});}
+     else{v.pause(); v.currentTime=0;}
+   });
+ },{threshold:0.6});
+ io.observe(v);
+});
+</script>
 </body>
 </html>
