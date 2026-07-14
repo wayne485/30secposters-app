@@ -286,6 +286,7 @@ button { font-family: inherit; }
     <div class="loading-overlay" id="position-loading" style="display:none;"><div class="spinner"></div></div>
   </div>
   <button class="btn-gold" onclick="goToPreview()">Use This Position →</button>
+  <button class="btn-sec" onclick="show('s-text-entry')">Edit Text</button>
   <button class="btn-sec" onclick="document.getElementById('file-input').click()">Choose Different Photo</button>
 </div>
 
@@ -294,6 +295,7 @@ button { font-family: inherit; }
   <canvas id="unlock-canvas"></canvas>
   <p>Unlock your poster <span class="gold-line">to save and print it</span></p>
   <button class="btn-gold" onclick="show('s-plans')">Continue to Unlock →</button>
+  <button class="btn-sec" onclick="show('s-position')">← Back to Adjust Photo</button>
 </div>
 
 <!-- PLANS (pricing) -->
@@ -1198,34 +1200,64 @@ async function idbClearPending() {
   }
 }
 
+function timeoutAfter(ms) {
+  return new Promise((_, reject) => setTimeout(() => reject(new Error('timed out')), ms));
+}
+
 async function savePendingPosterState() {
+  const state = {
+    styleId: currentStyle ? currentStyle.id : null,
+    headline: document.getElementById('input-headline').value,
+    subtitle: document.getElementById('input-subtitle').value,
+    fillColor: document.getElementById('input-fill-color').value,
+    strokeColor: document.getElementById('input-stroke-color').value,
+    uploadState: { x: uploadState.x, y: uploadState.y, scale: uploadState.scale },
+    cutoutDataURL: cutoutImg ? imageToDataURL(cutoutImg) : null,
+    finalDataURL: finalDataURL,
+  };
+
+  // IndexedDB is unreliable in some browsers' private/incognito modes -
+  // it can hang instead of erroring, which would otherwise leave the
+  // button looking dead with no feedback at all. If it doesn't finish
+  // within 4 seconds, fall back to sessionStorage with just the
+  // already-rendered poster (skipping the large cutout photo, which is
+  // what actually needs the bigger storage) so checkout can still proceed.
   try {
-    const state = {
-      styleId: currentStyle ? currentStyle.id : null,
-      headline: document.getElementById('input-headline').value,
-      subtitle: document.getElementById('input-subtitle').value,
-      fillColor: document.getElementById('input-fill-color').value,
-      strokeColor: document.getElementById('input-stroke-color').value,
-      uploadState: { x: uploadState.x, y: uploadState.y, scale: uploadState.scale },
-      cutoutDataURL: cutoutImg ? imageToDataURL(cutoutImg) : null,
-      finalDataURL: finalDataURL,
-    };
-    await idbSavePending(state);
+    await Promise.race([idbSavePending(state), timeoutAfter(4000)]);
     return { ok: true };
   } catch (e) {
-    console.error('Could not save poster state before checkout:', e);
-    return { ok: false, error: (e && e.message) ? e.message : String(e) };
+    console.error('IndexedDB save failed or timed out, trying fallback:', e);
+    try {
+      const lightState = { ...state, cutoutDataURL: null };
+      sessionStorage.setItem(PENDING_STORAGE_KEY + '_fallback', JSON.stringify(lightState));
+      return { ok: true };
+    } catch (e2) {
+      console.error('Fallback save also failed:', e2);
+      return { ok: false, error: (e2 && e2.message) ? e2.message : String(e2) };
+    }
   }
 }
 
 async function restorePendingPosterState() {
   let state;
   try {
-    state = await idbLoadPending();
+    state = await Promise.race([idbLoadPending(), timeoutAfter(4000)]);
   } catch (e) {
-    console.error('Could not load saved poster state:', e);
-    return false;
+    console.error('Could not load saved poster state from IndexedDB:', e);
+    state = null;
   }
+
+  if (!state) {
+    // Nothing in the primary storage (or it timed out) - check the
+    // fallback location used when IndexedDB itself was unavailable.
+    try {
+      const raw = sessionStorage.getItem(PENDING_STORAGE_KEY + '_fallback');
+      if (raw) state = JSON.parse(raw);
+    } catch (e) {
+      console.error('Could not load fallback poster state:', e);
+    }
+  }
+
   if (!state) return false;
 
   const style = POSTER_STYLES.find(s => s.id === state.styleId);
