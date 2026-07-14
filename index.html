@@ -12,6 +12,9 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 
   <title>30secPosters | Photo to personalised poster in 30 seconds</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -45,7 +48,7 @@
         radial-gradient(circle at 50% -10%, rgba(0, 213, 255, 0.11), transparent 30rem),
         var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
       line-height: 1.5;
       overflow-x: hidden;
     }
@@ -66,50 +69,6 @@
       padding-inline: 20px;
     }
 
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: rgba(5, 5, 5, 0.86);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .header-inner {
-      min-height: 72px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-    }
-
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      text-decoration: none;
-      font-size: 19px;
-      font-weight: 950;
-      letter-spacing: -0.03em;
-    }
-
-    .brand span {
-      color: var(--cyan);
-    }
-
-    .header-cta {
-      text-decoration: none;
-      background: var(--yellow);
-      color: #000;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-size: 13px;
-      font-weight: 950;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      white-space: nowrap;
-    }
-
-    .header-cta:active,
     .primary-cta:active {
       background: var(--yellow-dark);
       transform: translateY(1px);
@@ -117,38 +76,43 @@
 
     .hero {
       text-align: center;
-      padding: 62px 0 30px;
+      padding: 34px 0 26px;
     }
 
-    .eyebrow {
-      color: var(--cyan);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-size: 12px;
-      font-weight: 900;
-      margin-bottom: 18px;
+
+    .hero-logo {
+      width: min(72vw, 360px);
+      height: auto;
+      margin: 0 auto 30px;
     }
 
     .hero h1 {
       max-width: 870px;
       margin: 0 auto;
-      font-size: clamp(42px, 8vw, 78px);
-      line-height: 0.98;
-      letter-spacing: -0.055em;
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(48px, 10vw, 86px);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
       text-transform: uppercase;
-      font-weight: 1000;
+      font-weight: 400;
+      color: var(--yellow);
     }
 
     .hero-tagline {
       margin: 22px auto 0;
       max-width: 620px;
       font-size: clamp(20px, 4vw, 30px);
-      line-height: 1.15;
-      font-weight: 850;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .hero-tagline .line {
+      display: block;
     }
 
     .hero-tagline strong {
       color: var(--cyan);
+      font-size: 1.16em;
     }
 
     .primary-cta {
@@ -176,11 +140,17 @@
 
     .section-heading {
       text-align: center;
-      font-size: clamp(32px, 6vw, 54px);
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(36px, 7vw, 60px);
       line-height: 1;
-      letter-spacing: -0.045em;
+      letter-spacing: 0.01em;
       text-transform: uppercase;
-      font-weight: 1000;
+      font-weight: 400;
+    }
+
+    #create-heading {
+      white-space: nowrap;
+      font-size: clamp(31px, 8vw, 58px);
     }
 
     .carousel-wrap {
@@ -241,13 +211,17 @@
       margin-top: 8px;
       text-align: center;
       color: var(--muted);
-      font-size: 14px;
+      font-size: 18px;
       font-weight: 700;
     }
 
     .section {
       padding: 82px 0;
       border-top: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .yellow-heading {
+      color: var(--yellow);
     }
 
     .section-copy {
@@ -260,58 +234,47 @@
       font-weight: 750;
     }
 
-    .steps {
-      margin: 40px auto 0;
-      max-width: 940px;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .step {
-      background: linear-gradient(180deg, var(--panel-2), var(--panel));
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px 20px;
+    .simple-checklist {
+      margin: 34px auto 0;
+      max-width: 620px;
       text-align: center;
     }
 
-    .step-number {
-      width: 44px;
-      height: 44px;
-      margin: 0 auto 16px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      background: var(--cyan);
-      color: #000;
-      font-weight: 1000;
-      font-size: 18px;
+    .if-you-can {
+      font-size: clamp(25px, 5vw, 36px);
+      font-weight: 900;
+      margin-bottom: 18px;
     }
 
-    .step h3 {
-      font-size: 20px;
-      line-height: 1.1;
-      font-weight: 950;
-      text-transform: uppercase;
+    .check-line {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: 12px 0;
+      font-size: clamp(20px, 4.6vw, 28px);
+      font-weight: 800;
     }
 
-    .ready-line {
-      margin-top: 34px;
-      text-align: center;
+    .check-line .tick {
       color: var(--yellow);
-      text-transform: uppercase;
-      font-size: clamp(25px, 5vw, 40px);
-      font-weight: 1000;
-      letter-spacing: -0.035em;
+      font-size: 1.1em;
+      font-weight: 900;
     }
+
+    .create-conclusion {
+      margin-top: 22px;
+      font-size: clamp(24px, 5vw, 36px);
+      font-weight: 900;
+    }
+
 
     .center {
       text-align: center;
     }
 
     .demo-shell {
-      width: min(100%, 390px);
+      width: min(75%, 292px);
       margin: 34px auto 0;
       padding: 12px;
       border-radius: 28px;
@@ -330,29 +293,33 @@
 
     .trust-grid {
       margin: 36px auto 0;
-      max-width: 850px;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
+      max-width: 760px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
     .trust-item {
       display: flex;
-      align-items: center;
-      gap: 13px;
-      padding: 18px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      font-weight: 850;
-      font-size: 16px;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 12px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      color: var(--yellow);
+      font-weight: 900;
+      font-size: clamp(19px, 4.5vw, 27px);
+      text-align: center;
     }
 
     .trust-icon {
       flex: 0 0 auto;
-      color: var(--cyan);
-      font-size: 21px;
+      color: var(--yellow);
+      font-size: 1.05em;
       font-weight: 1000;
+      line-height: 1.2;
     }
 
     .final-cta {
@@ -406,18 +373,6 @@
         padding-inline: 16px;
       }
 
-      .header-inner {
-        min-height: 64px;
-      }
-
-      .brand {
-        font-size: 17px;
-      }
-
-      .header-cta {
-        padding: 10px 12px;
-        font-size: 11px;
-      }
 
       .hero {
         padding: 46px 0 24px;
@@ -438,15 +393,6 @@
         padding: 64px 0;
       }
 
-      .steps {
-        grid-template-columns: 1fr;
-        max-width: 430px;
-      }
-
-      .trust-grid {
-        grid-template-columns: 1fr;
-      }
-
       .footer-inner {
         flex-direction: column;
         text-align: center;
@@ -462,13 +408,22 @@
         grid-auto-columns: 31%;
       }
 
-      .hero h1 {
-        font-size: 39px;
-      }
+      .hero-logo {
+      width: min(72vw, 360px);
+      height: auto;
+      margin: 0 auto 30px;
+    }
 
-      .hero-tagline {
-        font-size: 20px;
-      }
+    .hero h1 {
+      max-width: 870px;
+      margin: 0 auto;
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(48px, 10vw, 86px);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--yellow);
     }
   </style>
 </head>
@@ -482,21 +437,16 @@
     4. Add terms.html and privacy.html.
   -->
 
-  <header class="site-header">
-    <div class="site-shell header-inner">
-      <a class="brand" href="#top" aria-label="30secPosters home">
-<img src="logo.png" alt="30secPosters" style="height:40px;width:auto;display:block;">
-</a>
-      <a class="header-cta app-link" href="#">Start Creating Now</a>
-    </div>
-  </header>
 
   <main id="top">
     <section class="hero">
       <div class="site-shell">
-        <p class="eyebrow">Made by you. Loved by them.</p>
+        <img class="hero-logo" src="logo.png" alt="30secPosters">
         <h1>Make your kid the hero of their own poster.</h1>
-        <p class="hero-tagline">Photo to personalised poster in <strong>30 seconds.</strong></p>
+        <p class="hero-tagline">
+          <span class="line">Photo to personalised poster in</span>
+          <span class="line"><strong>30 seconds.</strong></span>
+        </p>
         <a class="primary-cta app-link" href="#">Start Creating Now</a>
       </div>
     </section>
@@ -521,25 +471,14 @@
 
     <section class="section" aria-labelledby="skills-heading">
       <div class="site-shell">
-        <h2 class="section-heading" id="skills-heading">No design skills needed.</h2>
-        <p class="section-copy">If you can upload a photo and type a name, you can create a poster.</p>
+        <h2 class="section-heading yellow-heading" id="skills-heading">No design skills needed.</h2>
 
-        <div class="steps">
-          <article class="step">
-            <div class="step-number">1</div>
-            <h3>Upload a photo</h3>
-          </article>
-          <article class="step">
-            <div class="step-number">2</div>
-            <h3>We'll remove the background</h3>
-          </article>
-          <article class="step">
-            <div class="step-number">3</div>
-            <h3>Type a name</h3>
-          </article>
+        <div class="simple-checklist">
+          <p class="if-you-can">If you can...</p>
+          <p class="check-line"><span class="tick">✓</span><span>Upload a photo</span></p>
+          <p class="check-line"><span class="tick">✓</span><span>Type a name</span></p>
+          <p class="create-conclusion">You can create a poster.</p>
         </div>
-
-        <p class="ready-line">Your poster is ready.</p>
         <div class="center">
           <a class="primary-cta app-link" href="#">Start Creating Now</a>
         </div>
@@ -561,21 +500,18 @@
 
     <section class="section" aria-labelledby="trust-heading">
       <div class="site-shell">
-        <h2 class="section-heading" id="trust-heading">Why parents love it.</h2>
-
         <div class="trust-grid">
           <div class="trust-item"><span class="trust-icon">✓</span><span>Unlimited posters</span></div>
           <div class="trust-item"><span class="trust-icon">✓</span><span>Print-quality downloads</span></div>
           <div class="trust-item"><span class="trust-icon">✓</span><span>No recurring subscriptions</span></div>
-          <div class="trust-item"><span class="trust-icon">✓</span><span>14-day money back guarantee</span></div>
+          <div class="trust-item"><span class="trust-icon">✓</span><span>14 Day Money Back Guarantee</span></div>
         </div>
       </div>
     </section>
 
     <section class="final-cta">
       <div class="site-shell">
-        <h2 class="section-heading">Ready to create your first poster?</h2>
-        <p>Photo to personalised poster in 30 seconds.</p>
+        <h2 class="section-heading">Make your kid the hero today.</h2>
         <a class="primary-cta app-link" href="#">Start Creating Now</a>
       </div>
     </section>
