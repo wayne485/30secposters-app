@@ -48,7 +48,7 @@ button { font-family: inherit; }
 #s-agree .logo-img { width:100%; height:auto; object-fit:contain; }
 #s-agree h1 { font-size:24px; font-weight:900; line-height:1.2; text-transform:uppercase; letter-spacing:0.02em; padding:0 10px; text-align:center; }
 #s-agree h1 span { color:#00D5FF; }
-#s-agree .privacy-block { color:#999; font-size:13px; line-height:1.5; max-width:340px; text-align:center; margin:2px auto; }
+#s-agree .privacy-block { color:#fff; font-size:12px; line-height:1.35; max-width:340px; text-align:center; margin:2px auto; font-weight:600; }
 #agree-btn { width:100%; max-width:340px; padding:16px; background:#FFD700; color:#000; font-size:22px; font-weight:900; border:none; border-radius:12px; cursor:pointer; text-transform:uppercase; letter-spacing:0.05em; margin-top:6px; transition:background 0.2s; text-align:center; line-height:1.4; }
 #agree-btn:active { background:#E0BD00; }
 .terms-note { font-size:9.5px; color:#555; max-width:340px; line-height:1.35; text-align:justify; margin-top:6px; }
@@ -110,37 +110,46 @@ button { font-family: inherit; }
 
 /* ---------- Unlock (watermarked reveal) ---------- */
 #unlock-canvas { width: auto; height: auto; max-width: 300px; max-height: 62vh; display: block; border-radius: 14px; margin: 0 auto; }
-#s-unlock p { text-align: center; font-size: 16px; font-weight: 800; color: #fff; }
-#s-unlock .gold-line { color: #FFD700; }
+#s-unlock .unlock-copy { text-align:center; display:flex; flex-direction:column; gap:4px; }
+#s-unlock .unlock-title { color:#FFD700; font-size:20px; line-height:1.15; font-weight:900; text-transform:uppercase; letter-spacing:0.02em; }
+#s-unlock .unlock-subtitle { color:#fff; font-size:16px; line-height:1.3; font-weight:800; }
 
 /* ---------- Pricing plans ---------- */
-#s-plans { gap: 14px; }
+#s-plans { gap: 12px; }
 .plans-line1 {
   font-size: 24px; font-weight: 900; text-align: center; text-transform: uppercase; letter-spacing: 0.02em;
-  color: #FFC928; text-shadow: 0 0 12px rgba(255,201,40,0.55); margin-bottom: 0;
+  color: #FFD700; text-shadow: 0 0 12px rgba(255,215,0,0.55); margin-bottom: 0;
 }
 .plans-line2 {
   font-size: 19px; font-weight: 800; text-align: center; text-transform: uppercase; letter-spacing: 0.02em;
-  color: #00D5FF; text-shadow: 0 0 12px rgba(0,213,255,0.55); margin-bottom: 8px;
+  color: #00D5FF; text-shadow: 0 0 12px rgba(0,213,255,0.55); margin-bottom: 0;
 }
+.plans-guarantee {
+  display:flex; align-items:center; justify-content:center; gap:7px; margin:0 0 7px;
+  color:#fff; font-size:14px; font-weight:900; text-align:center; text-transform:uppercase; letter-spacing:0.03em;
+}
+.plans-guarantee .shield { font-size:17px; line-height:1; }
 .plan-card {
+  position:relative; overflow:hidden;
   width: 100%; max-width: 420px; background: #141414; border: 2px solid #2a2a2a; border-radius: 16px;
-  padding: 18px; display: flex; flex-direction: column; gap: 10px; text-align: center;
+  padding: 17px 18px; display: flex; flex-direction: column; gap: 7px; text-align: center;
 }
-.plan-badge {
-  align-self: center; background: #FFC928; color: #000; font-size: 11px; font-weight: 900;
-  text-transform: uppercase; letter-spacing: 0.05em; padding: 5px 13px; border-radius: 999px; margin-bottom: -3px;
+.plan-ribbon {
+  position:absolute; top:19px; right:-43px; width:160px; padding:6px 0;
+  background:#FFD700; color:#000; transform:rotate(45deg);
+  font-size:10px; line-height:1; font-weight:900; text-transform:uppercase; letter-spacing:0.055em;
+  text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.28); pointer-events:none;
 }
-.plan-card h3 { font-size: 20px; font-weight: 900; text-transform: uppercase; }
-.plan-price { font-size: 28px; font-weight: 900; color: #fff; }
+.plan-card h3 { font-size: 24px; line-height:1.1; font-weight: 900; text-transform: uppercase; }
+.plan-price { font-size: 28px; line-height:1.15; font-weight: 900; }
 .plan-price span { font-size: 13px; font-weight: 800; }
 .plan-card ul {
   list-style: none; text-align: left; font-size: 14px; color: #fff;
-  display: flex; flex-direction: column; gap: 6px; padding: 2px 0 2px 4px;
+  display: flex; flex-direction: column; gap: 4px; padding: 1px 0 1px 4px;
 }
 .plan-card ul li::before { content: "✔ "; font-weight: 900; }
 .plan-card button {
-  margin-top: 4px; width: 100%; padding: 16px;
+  margin-top: 3px; width: 100%; padding: 16px;
   border-radius: 12px; font-size: 15px; font-weight: 900;
   text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; border: none;
 }
@@ -149,6 +158,7 @@ button { font-family: inherit; }
 /* Starter: deliberately quiet and entry-level */
 .plan-starter { border-color: #9CA3AF; }
 .plan-starter h3,
+.plan-starter .plan-price,
 .plan-starter .plan-price span { color: #9CA3AF; }
 .plan-starter ul li::before { color: #9CA3AF; }
 .plan-starter button { background: #9CA3AF; color: #000; }
@@ -156,18 +166,20 @@ button { font-family: inherit; }
 
 /* Pro: primary conversion target */
 .plan-pro {
-  max-width: 440px; padding: 24px 20px; border: 3px solid #FFC928;
-  box-shadow: 0 0 24px rgba(255,201,40,0.20);
+  max-width: 440px; padding: 23px 20px 21px; border: 3px solid #FFD700;
+  box-shadow: 0 0 24px rgba(255,215,0,0.20);
 }
 .plan-pro h3,
-.plan-pro .plan-price span { color: #FFC928; }
-.plan-pro ul li::before { color: #FFC928; }
-.plan-pro button { background: #FFC928; color: #000; }
-.plan-pro button:active { background: #E5B51F; }
+.plan-pro .plan-price,
+.plan-pro .plan-price span { color: #FFD700; }
+.plan-pro ul li::before { color: #FFD700; }
+.plan-pro button { background: #FFD700; color: #000; }
+.plan-pro button:active { background: #E0BD00; }
 
 /* VIP: premium, but intentionally less dominant than Pro */
 .plan-vip { border-color: #C8A24A; }
 .plan-vip h3,
+.plan-vip .plan-price,
 .plan-vip .plan-price span { color: #C8A24A; }
 .plan-vip ul li::before { color: #C8A24A; }
 .plan-vip button { background: #C8A24A; color: #000; }
@@ -220,10 +232,11 @@ button { font-family: inherit; }
 }
 /* Make the Done/close button clearly visible rather than a small corner link */
 .clr-picker .clr-close {
-  display: block !important; width: 100% !important; margin-top: 12px !important;
-  padding: 10px !important; background: #00D5FF !important; color: #000 !important;
-  border-radius: 8px !important; font-weight: 900 !important; text-transform: uppercase !important;
-  font-size: 13px !important; border: none !important;
+  display:flex !important; align-items:center !important; justify-content:center !important;
+  width:100% !important; min-height:52px !important; margin-top:12px !important; padding:12px 16px !important;
+  background:#FFD700 !important; color:#000 !important; border-radius:9px !important;
+  font-weight:900 !important; text-transform:uppercase !important; font-size:17px !important; line-height:1 !important;
+  text-align:center !important; border:none !important; cursor:pointer !important;
 }
 
 </style>
@@ -251,7 +264,7 @@ button { font-family: inherit; }
   </div>
   <h1>Create personalised<br>posters in<br><span style="color:#00D5FF">30 seconds</span></h1>
   <div class="privacy-block">
-    Your photos are not stored anywhere.
+    Your photos are<br>not stored anywhere.
   </div>
   <button id="agree-btn" onclick="handleAgree()">I Agree<br>Create Poster</button>
   <p class="terms-note">By tapping 'I Agree' above, you certify that you are over 18, agree to our Terms of Use, and confirm that you have explicit parental or guardian authorization to photograph and distribute images of minors. You represent that you will not capture or distribute any objectionable, harmful, or unauthorized material, and acknowledge that you hold sole legal responsibility for all content you create.</p>
@@ -315,7 +328,10 @@ button { font-family: inherit; }
 <!-- UNLOCK (watermarked reveal, unpaid) -->
 <div class="screen" id="s-unlock">
   <canvas id="unlock-canvas"></canvas>
-  <p>Unlock your poster <span class="gold-line">to save and print it</span></p>
+  <div class="unlock-copy">
+    <div class="unlock-title">Unlock Your Poster</div>
+    <div class="unlock-subtitle">Download, share &amp; print</div>
+  </div>
   <button class="btn-gold" onclick="show('s-plans')">Continue to Unlock →</button>
   <button class="btn-sec" onclick="show('s-position')">← Back to Adjust Photo</button>
 </div>
@@ -324,6 +340,7 @@ button { font-family: inherit; }
 <div class="screen" id="s-plans">
   <p class="plans-line1">Create Unlimited Posters</p>
   <p class="plans-line2">No Recurring Subscriptions</p>
+  <p class="plans-guarantee"><span class="shield" aria-hidden="true">🛡</span><span>Money-Back Guarantee</span></p>
 
   <div class="plan-card plan-starter">
     <h3>Starter</h3>
@@ -336,7 +353,7 @@ button { font-family: inherit; }
   </div>
 
   <div class="plan-card plan-pro plan-featured">
-    <div class="plan-badge">Most Popular</div>
+    <div class="plan-ribbon">Most Popular</div>
     <h3>Pro</h3>
     <div class="plan-price">$29.95 <span>/ 6 Months</span></div>
     <ul>
