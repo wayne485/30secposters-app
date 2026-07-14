@@ -217,6 +217,10 @@ button { font-family: inherit; }
 <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
 </head>
 <body>
+<div id="global-loading" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:999; align-items:center; justify-content:center; flex-direction:column; gap:14px;">
+  <div class="spinner"></div>
+  <p id="global-loading-text" style="color:#fff; font-size:15px; font-weight:800; text-align:center; padding:0 24px;"></p>
+</div>
 
 <!-- SPLASH -->
 <div class="screen active" id="s-splash">
@@ -368,6 +372,15 @@ const CREATE_CHECKOUT_URL = SUPABASE_URL + "/functions/v1/rapid-endpoint";
 const VERIFY_SESSION_URL = SUPABASE_URL + "/functions/v1/verify-session";
 const ACCESS_STORAGE_KEY = "poster_access";
 const PENDING_STORAGE_KEY = "poster_pending";
+
+function showGlobalLoading(text) {
+  document.getElementById('global-loading-text').textContent = text;
+  document.getElementById('global-loading').style.display = 'flex';
+}
+
+function hideGlobalLoading() {
+  document.getElementById('global-loading').style.display = 'none';
+}
 
 const CANVAS_W = 3354, CANVAS_H = 4743;
 
@@ -529,6 +542,7 @@ window.onload = async () => {
 async function handleReturnFromCheckout(sessionId) {
   history.replaceState({}, '', window.location.pathname);
   show('s-splash');
+  showGlobalLoading('Getting your poster...');
 
   let result;
   try {
@@ -548,6 +562,7 @@ async function handleReturnFromCheckout(sessionId) {
   }
 
   if (!result.paid) {
+    hideGlobalLoading();
     alert('We could not confirm your payment. If you were charged, please contact support -- otherwise please try again.');
     if (localStorage.getItem('poster_consent') === '1') { show('s-style-select'); } else { show('s-agree'); }
     return;
@@ -556,6 +571,7 @@ async function handleReturnFromCheckout(sessionId) {
   storeAccess(result.tier, result.email, result.expiresAt);
 
   const restored = await restorePendingPosterState();
+  hideGlobalLoading();
   if (!restored) {
     // Payment succeeded but we couldn't recover the in-progress poster
     // (e.g. they cleared browser storage mid-checkout). Access is saved,
@@ -1045,14 +1061,20 @@ function setupTouchEvents() {
 // both the real preview-canvas (unlocked view / actual download source)
 // and the unlock-canvas (watermarked reveal for unpaid users), so the two
 // always stay pixel-identical apart from the watermark itself.
-function renderPosterOnto(canvas) {
+function renderPosterOnto(canvas, refDims) {
   canvas.width = CANVAS_W;
   canvas.height = CANVAS_H;
   const ctx = canvas.getContext('2d');
 
+  // Normally read live from the crop screen's canvas. During restore
+  // after a Stripe round trip, that screen was never actually opened
+  // this time, so its element is at a default/uninitialized size -
+  // refDims lets restore pass in the real saved dimensions instead.
   const displayCanvas = document.getElementById('position-canvas');
-  const scaleX = CANVAS_W / displayCanvas.width;
-  const scaleY = CANVAS_H / displayCanvas.height;
+  const refW = refDims ? refDims.width : displayCanvas.width;
+  const refH = refDims ? refDims.height : displayCanvas.height;
+  const scaleX = CANVAS_W / refW;
+  const scaleY = CANVAS_H / refH;
 
   if (!backgroundImg) {
     alert('This poster\'s background failed to load. Please go back and choose a poster again.');
@@ -1209,6 +1231,7 @@ function timeoutAfter(ms) {
 }
 
 async function savePendingPosterState() {
+  const positionCanvas = document.getElementById('position-canvas');
   const state = {
     styleId: currentStyle ? currentStyle.id : null,
     headline: document.getElementById('input-headline').value,
@@ -1216,6 +1239,7 @@ async function savePendingPosterState() {
     fillColor: document.getElementById('input-fill-color').value,
     strokeColor: document.getElementById('input-stroke-color').value,
     uploadState: { x: uploadState.x, y: uploadState.y, scale: uploadState.scale },
+    positionCanvasDims: { width: positionCanvas.width, height: positionCanvas.height },
     cutoutDataURL: cutoutImg ? imageToDataURL(cutoutImg) : null,
     finalDataURL: finalDataURL,
   };
@@ -1286,7 +1310,8 @@ async function restorePendingPosterState() {
   hasPositionedCutout = true;
 
   const previewCanvas = document.getElementById('preview-canvas');
-  if (backgroundImg && cutoutImg && renderPosterOnto(previewCanvas)) {
+  const refDims = state.positionCanvasDims || null;
+  if (backgroundImg && cutoutImg && renderPosterOnto(previewCanvas, refDims)) {
     // Rebuilt live from the restored photo/position/text rather than
     // trusting the saved snapshot image, which is what was losing the
     // text somewhere in the round trip through browser storage.
@@ -1321,9 +1346,11 @@ function renderDataURLOntoCanvas(dataURL, canvas) {
 async function startCheckout(priceId) {
   const errEl = document.getElementById('plans-error');
   errEl.style.display = 'none';
+  showGlobalLoading('Opening checkout...');
 
   const saveResult = await savePendingPosterState();
   if (!saveResult.ok) {
+    hideGlobalLoading();
     errEl.textContent = `Could not prepare your poster (${saveResult.error}). Please try again.`;
     errEl.style.display = 'block';
     return;
@@ -1349,8 +1376,12 @@ async function startCheckout(priceId) {
     const data = await res.json();
     if (!data.url) throw new Error(data.error || 'No checkout URL returned');
     window.location.href = data.url;
+    // Deliberately not hiding the spinner here - the page is navigating
+    // away to Stripe, so it stays visible right up until that happens
+    // rather than flashing back to the plans screen for a moment first.
   } catch (e) {
     console.error('Checkout failed:', e);
+    hideGlobalLoading();
     errEl.textContent = 'Could not start checkout. Please try again.';
     errEl.style.display = 'block';
     buttons.forEach(b => b.disabled = false);
