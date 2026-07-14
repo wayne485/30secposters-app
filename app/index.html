@@ -1283,11 +1283,21 @@ async function restorePendingPosterState() {
   if (state.cutoutDataURL) {
     cutoutImg = await loadImageSafe(state.cutoutDataURL);
   }
-  finalDataURL = state.finalDataURL || null;
   hasPositionedCutout = true;
 
-  if (finalDataURL) {
-    await renderDataURLOntoCanvas(finalDataURL, document.getElementById('preview-canvas'));
+  const previewCanvas = document.getElementById('preview-canvas');
+  if (backgroundImg && cutoutImg && renderPosterOnto(previewCanvas)) {
+    // Rebuilt live from the restored photo/position/text rather than
+    // trusting the saved snapshot image, which is what was losing the
+    // text somewhere in the round trip through browser storage.
+    finalDataURL = previewCanvas.toDataURL('image/jpeg', 0.95);
+  } else if (state.finalDataURL) {
+    // Fallback only if we couldn't rebuild (e.g. the cutout photo itself
+    // didn't survive storage) - better an old snapshot than nothing.
+    finalDataURL = state.finalDataURL;
+    await renderDataURLOntoCanvas(finalDataURL, previewCanvas);
+  } else {
+    finalDataURL = null;
   }
 
   await idbClearPending();
