@@ -81,9 +81,9 @@
 
 
     .hero-logo {
-      width: min(72vw, 360px);
+      width: min(60vw, 300px);
       height: auto;
-      margin: 0 auto 30px;
+      margin: 0 auto 24px;
     }
 
     .hero h1 {
@@ -99,10 +99,10 @@
     }
 
     .hero-tagline {
-      margin: 22px auto 0;
+      margin: 14px auto 0;
       max-width: 620px;
       font-size: clamp(20px, 4vw, 30px);
-      line-height: 1.2;
+      line-height: 1.08;
       font-weight: 800;
     }
 
@@ -135,7 +135,7 @@
     }
 
     .create-section {
-      padding: 34px 0 82px;
+      padding: 26px 0 44px;
     }
 
     .section-heading {
@@ -154,14 +154,14 @@
     }
 
     .carousel-wrap {
-      margin-top: 28px;
+      margin-top: 22px;
       position: relative;
     }
 
     .poster-carousel {
       display: grid;
       grid-auto-flow: column;
-      grid-auto-columns: minmax(0, 30%);
+      grid-auto-columns: minmax(0, 40%);
       gap: 12px;
       overflow-x: auto;
       overscroll-behavior-inline: contain;
@@ -208,7 +208,7 @@
     }
 
     .styles-note {
-      margin-top: 8px;
+      margin-top: 6px;
       text-align: center;
       color: var(--muted);
       font-size: 18px;
@@ -216,12 +216,21 @@
     }
 
     .section {
-      padding: 82px 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.07);
+      padding: 52px 0;
     }
 
     .yellow-heading {
       color: var(--yellow);
+      font-size: clamp(42px, 9vw, 68px);
+      line-height: 0.9;
+    }
+
+    .yellow-text {
+      color: var(--yellow);
+    }
+
+    .cyan-text {
+      color: var(--cyan);
     }
 
     .section-copy {
@@ -235,37 +244,45 @@
     }
 
     .simple-checklist {
-      margin: 34px auto 0;
-      max-width: 620px;
-      text-align: center;
+      margin: 28px auto 0;
+      max-width: 430px;
+      text-align: left;
+    }
+
+    .if-you-can,
+    .create-conclusion {
+      font-size: clamp(20px, 4.8vw, 27px);
+      font-weight: 900;
+      line-height: 1.2;
     }
 
     .if-you-can {
-      font-size: clamp(25px, 5vw, 36px);
-      font-weight: 900;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .check-line {
       display: flex;
-      justify-content: center;
-      align-items: center;
+      justify-content: flex-start;
+      align-items: flex-start;
       gap: 12px;
       margin: 12px 0;
-      font-size: clamp(20px, 4.6vw, 28px);
-      font-weight: 800;
+      color: var(--yellow);
+      font-size: clamp(20px, 4.8vw, 27px);
+      font-weight: 900;
+      line-height: 1.2;
     }
 
     .check-line .tick {
+      flex: 0 0 24px;
       color: var(--yellow);
-      font-size: 1.1em;
+      font-size: 1.05em;
       font-weight: 900;
+      line-height: 1.2;
+      text-align: center;
     }
 
     .create-conclusion {
-      margin-top: 22px;
-      font-size: clamp(24px, 5vw, 36px);
-      font-weight: 900;
+      margin-top: 18px;
     }
 
 
@@ -274,70 +291,82 @@
     }
 
     .demo-shell {
-      width: min(75%, 292px);
-      margin: 34px auto 0;
-      padding: 12px;
-      border-radius: 28px;
-      background: #111;
-      border: 1px solid #303030;
-      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.52);
+      position: relative;
+      width: min(70%, 274px);
+      margin: 26px auto 0;
+      padding: 10px;
+      border-radius: 38px;
+      background: linear-gradient(145deg, #2b2b2b, #0b0b0b);
+      border: 2px solid #494949;
+      box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.58),
+        inset 0 0 0 1px rgba(255,255,255,0.06);
+    }
+
+    .demo-shell::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 32%;
+      height: 22px;
+      border-radius: 999px;
+      background: #050505;
+      z-index: 2;
     }
 
     .demo-video {
       width: 100%;
       aspect-ratio: 874 / 1920;
       object-fit: cover;
-      border-radius: 20px;
+      border-radius: 30px;
       background: #000;
     }
 
     .trust-grid {
-      margin: 36px auto 0;
-      max-width: 760px;
+      margin: 22px auto 0;
+      max-width: 430px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
     .trust-item {
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      gap: 12px;
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      align-items: start;
+      column-gap: 10px;
       padding: 0;
       background: transparent;
       border: none;
-      border-radius: 0;
       color: var(--yellow);
       font-weight: 900;
-      font-size: clamp(19px, 4.5vw, 27px);
-      text-align: center;
+      font-size: clamp(19px, 4.6vw, 26px);
+      line-height: 1.18;
+      text-align: left;
     }
 
     .trust-icon {
-      flex: 0 0 auto;
       color: var(--yellow);
-      font-size: 1.05em;
+      font-size: 1em;
       font-weight: 1000;
-      line-height: 1.2;
+      line-height: 1.18;
+      text-align: center;
     }
 
     .final-cta {
-      padding: 90px 0 100px;
+      padding: 56px 0 72px;
       text-align: center;
-      border-top: 1px solid rgba(255, 255, 255, 0.07);
-      background: radial-gradient(circle at 50% 20%, rgba(255, 215, 0, 0.1), transparent 24rem);
+      background: var(--bg);
     }
 
-    .final-cta p {
-      margin-top: 18px;
-      font-size: clamp(19px, 3.5vw, 26px);
-      font-weight: 800;
+    .final-cta .section-heading {
+      line-height: 0.95;
     }
 
     .site-footer {
-      border-top: 1px solid rgba(255, 255, 255, 0.07);
-      padding: 34px 0 calc(34px + env(safe-area-inset-bottom));
+      padding: 28px 0 calc(28px + env(safe-area-inset-bottom));
       color: var(--muted);
     }
 
@@ -379,18 +408,18 @@
       }
 
       .poster-carousel {
-        grid-auto-columns: 30%;
+        grid-auto-columns: 40%;
         margin-inline: -16px;
         padding-inline: 16px;
         gap: 9px;
       }
 
       .create-section {
-        padding-bottom: 62px;
+        padding-bottom: 42px;
       }
 
       .section {
-        padding: 64px 0;
+        padding: 42px 0;
       }
 
       .footer-inner {
@@ -405,13 +434,13 @@
 
     @media (max-width: 390px) {
       .poster-carousel {
-        grid-auto-columns: 31%;
+        grid-auto-columns: 41%;
       }
 
       .hero-logo {
-      width: min(72vw, 360px);
+      width: min(60vw, 300px);
       height: auto;
-      margin: 0 auto 30px;
+      margin: 0 auto 24px;
     }
 
     .hero h1 {
@@ -442,10 +471,11 @@
     <section class="hero">
       <div class="site-shell">
         <img class="hero-logo" src="logo.png" alt="30secPosters">
-        <h1>Make your kid the hero of their own poster.</h1>
+        <h1>Make your kid the hero of their own poster</h1>
         <p class="hero-tagline">
-          <span class="line">Photo to personalised poster in</span>
-          <span class="line"><strong>30 seconds.</strong></span>
+          <span class="line">Photo to</span>
+          <span class="line">personalised poster in</span>
+          <span class="line"><strong>30 seconds</strong></span>
         </p>
         <a class="primary-cta app-link" href="#">Start Creating Now</a>
       </div>
@@ -453,7 +483,7 @@
 
     <section class="create-section" aria-labelledby="create-heading">
       <div class="site-shell">
-        <h2 class="section-heading" id="create-heading">What will you create?</h2>
+        <h2 class="section-heading" id="create-heading">What will you create</h2>
 
         <div class="carousel-wrap">
           <div class="poster-carousel" aria-label="Poster style examples">
@@ -471,7 +501,7 @@
 
     <section class="section" aria-labelledby="skills-heading">
       <div class="site-shell">
-        <h2 class="section-heading yellow-heading" id="skills-heading">No design skills needed.</h2>
+        <h2 class="section-heading yellow-heading" id="skills-heading">No design skills<br>needed</h2>
 
         <div class="simple-checklist">
           <p class="if-you-can">If you can...</p>
@@ -487,7 +517,7 @@
 
     <section class="section" aria-labelledby="demo-heading">
       <div class="site-shell center">
-        <h2 class="section-heading" id="demo-heading">Watch a poster be created in 30 seconds.</h2>
+        <h2 class="section-heading" id="demo-heading">Watch a poster be created in <span class="cyan-text">30 seconds</span></h2>
 
         <div class="demo-shell">
           <video class="demo-video" autoplay muted loop playsinline preload="metadata" aria-label="A personalised poster being created in under 30 seconds">
@@ -511,7 +541,7 @@
 
     <section class="final-cta">
       <div class="site-shell">
-        <h2 class="section-heading">Make your kid the hero today.</h2>
+        <h2 class="section-heading">Make your kid<br>the <span class="yellow-text">hero</span> today</h2>
         <a class="primary-cta app-link" href="#">Start Creating Now</a>
       </div>
     </section>
