@@ -219,6 +219,18 @@ button { font-family: inherit; }
   transform: none !important;
   height: max-content !important;
   width: max-content !important;
+  /* iOS Safari can cache a stale touch hit-test region for a freshly-
+     inserted position:fixed element until something forces it onto its
+     own compositing layer. translateZ(0) is a Z-axis no-op (0 = no
+     visual shift), so it does NOT reintroduce the earlier translate()-
+     positioning bug documented above - it just tells iOS to composite
+     the whole modal immediately instead of lazily, which is what let
+     the native hue/alpha range sliders take several taps before
+     responding while the JS-driven gradient square (which doesn't rely
+     on the OS's own hit-testing) worked instantly. */
+  -webkit-transform: translateZ(0) !important;
+  transform: translateZ(0) !important;
+  will-change: transform !important;
   /* Cap it so it can't overflow past the screen edges on narrow phones -
      this only constrains the outer container, it doesn't force a resize
      of any internal piece (gradient box, hue slider, swatches), which is
@@ -484,6 +496,22 @@ document.addEventListener('touchmove', (event) => {
     event.preventDefault();
   }
 }, { passive: false, capture: true });
+
+// Coloris fires a genuine (non-bubbling) 'open' event on the input the
+// instant the picker modal is created and shown. Force a layout flush
+// right then - reading offsetHeight makes the browser recalculate layout
+// synchronously - as a second line of defense alongside the CSS
+// translateZ(0) compositing hint above, both aimed at the same iOS Safari
+// bug: a freshly-inserted position:fixed element can have a stale touch
+// hit-test region until something forces a recompute, which is why the
+// native hue/alpha sliders needed several taps before responding.
+document.addEventListener('open', (event) => {
+  if (!event.target || !event.target.classList || !event.target.classList.contains('coloris-input')) return;
+  const picker = document.querySelector('.clr-picker');
+  if (picker) {
+    void picker.offsetHeight; // force synchronous reflow
+  }
+}, { capture: true });
 
 Coloris({
   el: '.coloris-input',
