@@ -235,15 +235,30 @@ button { font-family: inherit; }
   box-sizing: border-box !important;
 }
 
-/* The gradient square and hue rail are drag controls, not page-scroll areas.
-   Explicitly hand those gestures to Coloris and stop Safari treating them as
-   scrolling/panning gestures. This is intentionally limited to the controls
-   themselves so the rest of the page keeps its normal behaviour. */
-.clr-picker .clr-gradient,
-.clr-picker .clr-hue,
-.clr-picker .clr-alpha {
+/* Only the gradient square is a drag control that Coloris drives with its
+   own custom touchstart/touchmove JS - that's the one that needs the page's
+   default touch scrolling handed over to it, or Safari treats the drag as a
+   page pan.
+   The hue and alpha rails are NOT custom-built: they are native
+   <input type="range"> elements, and dragging their thumb is handled
+   entirely by the browser/OS itself, not by any Coloris JS. Disabling
+   touch-action on them removes the browser's own native slider-drag
+   gesture with nothing to replace it, which is what broke dragging (tap
+   still worked because that's a plain click, but continuous drag did
+   not). So they are deliberately left out of this rule. */
+.clr-picker .clr-gradient {
   touch-action: none !important;
   -ms-touch-action: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+}
+
+/* The sliders still shouldn't trigger text selection or iOS's press-and-hold
+   callout, but touch-action must stay at its default so native dragging of
+   the range thumb keeps working. */
+.clr-picker .clr-hue,
+.clr-picker .clr-alpha {
   -webkit-user-select: none !important;
   user-select: none !important;
   -webkit-touch-callout: none !important;
@@ -452,14 +467,20 @@ const CANVAS_W = 3354, CANVAS_H = 4743;
 // COLOR PICKER (Coloris) - full spectrum picker with hex input,
 // replaces the old native <input type="color"> swatch-limited picker.
 // ═══════════════════════════════════════════════════════
-// iOS Safari can interpret a drag on Coloris's gradient/hue controls as
-// scrolling the popup itself. Prevent the browser's default pan only while a
-// finger is actually moving on those controls. We do not stop propagation,
-// because Coloris still needs to receive the same touch event.
+// iOS Safari can interpret a drag on Coloris's gradient square as scrolling
+// the popup itself. Prevent the browser's default pan only while a finger is
+// actually moving on that control. We do not stop propagation, because
+// Coloris still needs to receive the same touch event.
+// The hue and alpha rails are deliberately excluded here: they are native
+// <input type="range"> elements, and their thumb-dragging is handled by the
+// browser itself, not by Coloris JS. Calling preventDefault() on touchmove
+// there cancels the browser's own drag gesture with nothing to replace it,
+// which is what stopped the hue slider from being draggable (only a tap
+// still worked, since that's just a plain click).
 document.addEventListener('touchmove', (event) => {
   const target = event.target;
   if (!(target instanceof Element)) return;
-  if (target.closest('.clr-gradient, .clr-hue, .clr-alpha')) {
+  if (target.closest('.clr-gradient')) {
     event.preventDefault();
   }
 }, { passive: false, capture: true });
