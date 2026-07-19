@@ -72,7 +72,7 @@ button { font-family: inherit; }
   background: #1a1a1a; border: 2px solid #2a2a2a; border-radius: 14px;
   overflow: hidden; cursor: pointer; padding: 0; display: flex; flex-direction: column;
 }
-.style-card img { width: 100%; aspect-ratio: 3354/4743; object-fit: cover; display: block; }
+.style-card img { width: 100%; aspect-ratio: 3300/5100; object-fit: cover; display: block; }
 .style-card .label { padding: 10px; font-size: 13px; font-weight: 800; text-align: center; text-transform: uppercase; letter-spacing: 0.03em; color: #00D5FF; }
 
 /* ---------- Upload ---------- */
@@ -100,7 +100,7 @@ button { font-family: inherit; }
 
 /* ---------- Position / crop ---------- */
 .canvas-wrap {
-  position: relative; width: 100%; max-width: 480px; aspect-ratio: 3354/4743;
+  position: relative; width: 100%; max-width: 480px; aspect-ratio: 3300/5100;
   border-radius: 14px; overflow: hidden; touch-action: none; background: #111; flex-shrink: 0;
 }
 #position-canvas { width: 100%; height: 100%; display: block; }
@@ -473,7 +473,7 @@ function hideGlobalLoading() {
   document.getElementById('global-loading').style.display = 'none';
 }
 
-const CANVAS_W = 3354, CANVAS_H = 4743;
+const CANVAS_W = 3300, CANVAS_H = 5100;
 
 // ═══════════════════════════════════════════════════════
 // COLOR PICKER (Coloris) - full spectrum picker with hex input,
@@ -1021,9 +1021,9 @@ function renderPositionCanvas() {
 // Print safe-zone guide - shown only on the position screen as an editing
 // aid, never baked into the final downloaded/printed image. Inset is 10mm
 // at the assumed 300dpi print resolution these canvas dimensions are based
-// on (3354/4743px matching close to A3 print sizing), converted to native
-// canvas pixels then scaled to whatever size the screen is currently
-// rendering at.
+// on (3300/5100px = true US Ledger/Tabloid 11x17in at 300dpi), converted
+// to native canvas pixels then scaled to whatever size the screen is
+// currently rendering at.
 const SAFE_ZONE_INSET_MM = 10;
 const PRINT_DPI = 300;
 function drawSafeZoneGuide(ctx, W, H) {
