@@ -297,6 +297,24 @@ button { font-family: inherit; }
   text-align:center !important; border:none !important; cursor:pointer !important;
 }
 
+/* ── PWA "Save as an App" install prompt (ported from Champion Display) ── */
+.pwa-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:998; }
+.pwa-overlay.show { display:block; }
+.pwa-prompt {
+  display:none; position:fixed; left:50%; bottom:0; transform:translateX(-50%);
+  width:100%; max-width:420px; background:#161616; border:1px solid #2a2a2a;
+  border-radius:20px 20px 0 0; padding:24px 20px calc(24px + env(safe-area-inset-bottom));
+  z-index:999; box-sizing:border-box;
+}
+.pwa-prompt.show { display:flex; flex-direction:column; }
+.pwa-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
+.pwa-title { font-size:22px; font-weight:900; color:#00D5FF; text-transform:uppercase; letter-spacing:0.04em; line-height:1.2; }
+.pwa-close { background:none; border:none; color:#555; font-size:30px; cursor:pointer; line-height:1; padding:0 0 0 12px; }
+.pwa-text { font-size:15px; color:#bbb; line-height:1.65; margin-bottom:24px; }
+.pwa-footer { display:flex; flex-direction:column; gap:12px; width:100%; }
+.btn-pwa-action { width:100%; padding:20px; border:none; border-radius:14px; font-size:17px; font-weight:900; cursor:pointer; text-align:center; text-transform:uppercase; letter-spacing:0.05em; }
+.btn-pwa-install { background:#FFEB3B; color:#000; }
+.btn-pwa-dismiss { background:#2a2a2a; color:#777; border:1px solid #333; font-size:14px; font-weight:700; padding:16px; }
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css"/>
 <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
@@ -449,12 +467,39 @@ button { font-family: inherit; }
   <button class="btn-sec btn-create-another" onclick="startNewPoster()">Create Another Poster</button>
 </div>
 
+<!-- PWA PROMPT MODAL WINDOW -->
+<div id="pwa-overlay" class="pwa-overlay" onclick="dismissPwaPrompt()"></div>
+<div id="pwa-prompt-container" class="pwa-prompt">
+  <div class="pwa-header">
+    <div class="pwa-title">Save as an App</div>
+    <button class="pwa-close" onclick="dismissPwaPrompt()">&times;</button>
+  </div>
+  <div id="pwa-android-section">
+    <div class="pwa-text" style="margin-bottom:10px;">Open with one tap next time - no need to find this page again.</div>
+    <div class="pwa-footer">
+      <button id="pwa-install-btn" class="btn-pwa-action btn-pwa-install" onclick="triggerPwaInstall()">Add to Home Screen</button>
+      <button class="btn-pwa-action btn-pwa-dismiss" onclick="dismissPwaPrompt()">Not Now</button>
+    </div>
+  </div>
+  <div id="pwa-ios-section" style="display:none;">
+    <div class="pwa-text">To add to your Home Screen:<br><br>
+      1. Tap the <strong>Share</strong> button [⎋] at the bottom of Safari<br>
+      2. Scroll down and tap <strong>"Add to Home Screen"</strong><br>
+      3. Tap <strong>Add</strong>
+    </div>
+    <div class="pwa-footer" style="margin-top:12px;">
+      <button class="btn-pwa-action btn-pwa-dismiss" style="flex:1;" onclick="dismissPwaPrompt()">Got It</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ═══════════════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════════════
 const SUPABASE_URL = "https://ypflsgovwhtgrqenqmja.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_Y74uRzgaLZ8fLRaz6pFemA_xsXmCf9v";
+let deferredPrompt = null; // captured Android/Chrome native install prompt, see initializePwaInstallPrompts()
 const EDGE_FUNCTION_URL = SUPABASE_URL + "/functions/v1/bright-service";
 // Real deployed slugs -- Supabase's dashboard rename only changes the
 // display name, not the actual URL, so these are confirmed against what's
@@ -622,6 +667,7 @@ function handleAgree() {
 // INIT
 // ═══════════════════════════════════════════════════════
 window.onload = async () => {
+  initializePwaInstallPrompts();
   try {
     POSTER_STYLES = await loadPosterStylesWithRetry();
   } catch (err) {
@@ -1572,11 +1618,116 @@ function downloadPoster() {
       btn.disabled = false;
       btn.textContent = originalLabel;
     }, 2500);
+
+    // PWA prompt - ported from Champion Display. Shows once per successful
+    // download, only if not already installed and not already running as
+    // an installed app, so a paying customer can get back in with one tap
+    // instead of relying on a bookmark.
+    const installed = localStorage.getItem('tsp_pwa_installed');
+    const standalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+    if (!installed && !standalone) {
+      setTimeout(() => {
+        const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        showPwaPromptModal(isIOSDevice ? 'ios' : (deferredPrompt ? 'android' : 'android_fallback'));
+      }, 800);
+    }
   } catch (e) {
     console.error('Download failed:', e);
     alert('Download failed. Please try again.');
   }
 }
+
+// ── PWA / HOME SCREEN INSTALL CONFIG (ported from Champion Display) ──
+function initializePwaInstallPrompts() {
+  // Capture install prompt - captured on load, actually shown later, only
+  // after a successful download (see downloadPoster above).
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+  });
+
+  // Service worker intentionally omitted - not needed for this app, same
+  // reasoning as Champion Display.
+
+  // Dynamically inject the app manifest. Uses window.location.origin rather
+  // than a hardcoded GitHub Pages URL, so this keeps working automatically
+  // whichever origin the app is actually being served from (GitHub Pages
+  // URL now, the custom 30secposters.com domain once that's connected).
+  const pwaStartUrl = window.location.href.split('#')[0];
+  const iconUrl = window.location.origin + '/logo.png';
+  const manifest = {
+    "name": "30secPosters",
+    "short_name": "30secPosters",
+    "start_url": pwaStartUrl,
+    "display": "standalone",
+    "background_color": "#0a0a0a",
+    "theme_color": "#0a0a0a",
+    "orientation": "portrait",
+    "icons": [
+      { "src": iconUrl, "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+      { "src": iconUrl, "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    ]
+  };
+  const stringManifest = JSON.stringify(manifest);
+  const blob = new Blob([stringManifest], {type: 'application/json'});
+  const manifestURL = URL.createObjectURL(blob);
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = manifestURL;
+  document.head.appendChild(link);
+}
+
+function dismissPwaPrompt() {
+  document.getElementById('pwa-prompt-container').classList.remove('show');
+  const overlay = document.getElementById('pwa-overlay');
+  if (overlay) overlay.classList.remove('show');
+  // No localStorage flag on dismiss - prompt will show again next download
+  // until actually installed, same behaviour as Champion Display.
+}
+
+function triggerPwaInstall() {
+  if (deferredPrompt) {
+    // Native Android install prompt available - use it
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((result) => {
+      if (result.outcome === 'accepted') {
+        localStorage.setItem('tsp_pwa_installed', '1');
+      }
+      deferredPrompt = null;
+      dismissPwaPrompt();
+    });
+  } else {
+    // No native prompt available - show manual Android instructions
+    document.getElementById('pwa-android-section').innerHTML = `
+      <div class="pwa-text">To add to your Home Screen:<br><br>
+        1. Tap the <strong style="color:#fff;">three dots menu</strong> [⋮] in Chrome<br>
+        2. Tap <strong style="color:#fff;">"Add to Home Screen"</strong> or <strong style="color:#fff;">"Install App"</strong><br>
+        3. Tap <strong style="color:#fff;">Add</strong>
+      </div>
+      <div class="pwa-footer" style="margin-top:16px;">
+        <button class="btn-pwa-action btn-pwa-dismiss" onclick="dismissPwaPrompt()">Got It</button>
+      </div>
+    `;
+  }
+}
+
+function showPwaPromptModal(platform) {
+  const modal = document.getElementById('pwa-prompt-container');
+  const overlay = document.getElementById('pwa-overlay');
+  const androidSection = document.getElementById('pwa-android-section');
+  const iosSection = document.getElementById('pwa-ios-section');
+
+  if (platform === 'ios') {
+    androidSection.style.display = 'none';
+    iosSection.style.display = 'block';
+  } else {
+    androidSection.style.display = 'block';
+    iosSection.style.display = 'none';
+  }
+  modal.classList.add('show');
+  if (overlay) overlay.classList.add('show');
+}
+
 </script>
 </body>
 </html>
