@@ -1649,12 +1649,17 @@ function initializePwaInstallPrompts() {
   // Service worker intentionally omitted - not needed for this app, same
   // reasoning as Champion Display.
 
-  // Dynamically inject the app manifest. Uses window.location.origin rather
-  // than a hardcoded GitHub Pages URL, so this keeps working automatically
-  // whichever origin the app is actually being served from (GitHub Pages
-  // URL now, the custom 30secposters.com domain once that's connected).
-  const pwaStartUrl = window.location.href.split('#')[0];
-  const iconUrl = window.location.origin + '/logo.png';
+  // Dynamically inject the app manifest. start_url is deliberately stripped
+  // down to origin+pathname only - NOT the current full URL - because this
+  // runs on every page load, including the moment someone returns from
+  // Stripe checkout with a one-time ?session_id=... in the address bar. If
+  // that stayed in start_url, the installed home-screen icon would be
+  // permanently pinned to replaying that single-use session verification
+  // forever, failing every time after the first (since a session_id can
+  // only be verified once) - exactly the "error flashes then disappears on
+  // reopen" bug. Always launch clean instead.
+  const pwaStartUrl = window.location.origin + window.location.pathname;
+  const iconUrl = window.location.origin + '/icon.png';
   const manifest = {
     "name": "30secPosters",
     "short_name": "30secPosters",
@@ -1664,8 +1669,8 @@ function initializePwaInstallPrompts() {
     "theme_color": "#0a0a0a",
     "orientation": "portrait",
     "icons": [
-      { "src": iconUrl, "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-      { "src": iconUrl, "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+      { "src": iconUrl, "sizes": "192x192", "type": "image/png", "purpose": "any" },
+      { "src": iconUrl, "sizes": "512x512", "type": "image/png", "purpose": "any" }
     ]
   };
   const stringManifest = JSON.stringify(manifest);
