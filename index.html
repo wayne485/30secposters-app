@@ -423,10 +423,10 @@
 
     .pricing-grid {
       width: min(100%, 440px);
-      margin: 20px auto 0;
+      margin: 28px auto 0;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 24px;
     }
 
     .pricing-card {
@@ -516,7 +516,7 @@
     }
 
     .pricing-unlock-copy {
-      margin-top: 22px;
+      margin-top: var(--section-gap);
       color: #ffffff;
       text-align: center;
       font-size: clamp(18px, 4.4vw, 24px);
@@ -527,7 +527,7 @@
     .pricing-cta {
       display: flex;
       justify-content: center;
-      padding-top: 22px;
+      padding-top: var(--section-gap);
       padding-bottom: 0;
     }
 
@@ -819,7 +819,7 @@
         <div class="pricing-grid">
           <article class="pricing-card pricing-starter">
             <h3>Starter</h3>
-            <p class="pricing-price">$9.95 <span>/ 60 Days</span></p>
+            <p class="pricing-price">$9.95 <span>/ 30 Days</span></p>
           </article>
 
           <article class="pricing-card pricing-pro">
@@ -910,6 +910,56 @@
   </footer>
 
   <script>
+    // ── FUNNEL TRACKING ──
+    // Mirrors the same visitor_id/source scheme used in the app - both
+    // pages share the same origin, so localStorage carries the visitor_id
+    // through the click-through from here into /app/ with no extra work.
+    const SUPABASE_URL = "https://ypflsgovwhtgrqenqmja.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_Y74uRzgaLZ8fLRaz6pFemA_xsXmCf9v";
+    const VISITOR_ID_KEY = "tsp_visitor_id";
+    const VISITOR_SOURCE_KEY = "tsp_visitor_source";
+
+    function getVisitorId() {
+      let id = localStorage.getItem(VISITOR_ID_KEY);
+      if (!id) {
+        id = crypto.randomUUID();
+        localStorage.setItem(VISITOR_ID_KEY, id);
+      }
+      return id;
+    }
+
+    function getVisitorSource() {
+      // Anyone loading this page is, by definition, on the marketing site.
+      let source = localStorage.getItem(VISITOR_SOURCE_KEY);
+      if (!source) {
+        source = 'marketing';
+        localStorage.setItem(VISITOR_SOURCE_KEY, source);
+      }
+      return source;
+    }
+
+    async function logFunnelEvent(eventType) {
+      try {
+        await fetch(SUPABASE_URL + "/rest/v1/funnel_events", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'apikey': SUPABASE_ANON_KEY,
+          },
+          body: JSON.stringify({
+            visitor_id: getVisitorId(),
+            event_type: eventType,
+            source: getVisitorSource(),
+          }),
+        });
+      } catch (e) {
+        console.error('Funnel tracking failed:', e);
+      }
+    }
+
+    logFunnelEvent('landed');
+
     // Replace this with the final app URL before launch.
     const APP_URL = "https://30secposters.com/app/";
 
