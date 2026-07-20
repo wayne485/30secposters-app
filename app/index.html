@@ -413,7 +413,7 @@ button { font-family: inherit; }
     <div class="unlock-title">Unlock Your Poster</div>
     <div class="unlock-subtitle">Download, share &amp; print</div>
   </div>
-  <button class="btn-gold" onclick="show('s-plans')">Continue to Unlock →</button>
+  <button class="btn-gold" onclick="handleReachUnlock()">Continue to Unlock →</button>
   <button class="btn-sec" onclick="show('s-position')">← Back to Adjust Photo</button>
 </div>
 
@@ -508,6 +508,59 @@ const CREATE_CHECKOUT_URL = SUPABASE_URL + "/functions/v1/rapid-endpoint";
 const VERIFY_SESSION_URL = SUPABASE_URL + "/functions/v1/verify-session";
 const ACCESS_STORAGE_KEY = "poster_access";
 const PENDING_STORAGE_KEY = "poster_pending";
+
+// ── FUNNEL TRACKING ──
+// visitor_id persists in localStorage, shared across the marketing site
+// and the app since both live under the same 30secposters.com origin -
+// no extra plumbing needed for it to survive the click-through from one
+// page to the other.
+const VISITOR_ID_KEY = "tsp_visitor_id";
+const VISITOR_SOURCE_KEY = "tsp_visitor_source";
+
+function getVisitorId() {
+  let id = localStorage.getItem(VISITOR_ID_KEY);
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem(VISITOR_ID_KEY, id);
+  }
+  return id;
+}
+
+function getVisitorSource() {
+  // Source is decided once, on first touch, and then stuck to for the
+  // rest of this visitor's journey - so a direct-ad visitor who later
+  // happens to click something pointing back at the marketing page
+  // doesn't get relabelled partway through their own funnel.
+  let source = localStorage.getItem(VISITOR_SOURCE_KEY);
+  if (!source) {
+    source = document.referrer.includes('30secposters.com') && !document.referrer.includes('/app')
+      ? 'marketing'
+      : 'direct';
+    localStorage.setItem(VISITOR_SOURCE_KEY, source);
+  }
+  return source;
+}
+
+async function logFunnelEvent(eventType) {
+  try {
+    await fetch(SUPABASE_URL + "/rest/v1/funnel_events", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'apikey': SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({
+        visitor_id: getVisitorId(),
+        event_type: eventType,
+        source: getVisitorSource(),
+      }),
+    });
+  } catch (e) {
+    // Tracking failures should never interrupt the actual poster flow
+    console.error('Funnel tracking failed:', e);
+  }
+}
 
 function showGlobalLoading(text) {
   document.getElementById('global-loading-text').textContent = text;
@@ -660,7 +713,13 @@ function show(id) {
 
 function handleAgree() {
   localStorage.setItem('poster_consent', '1');
+  logFunnelEvent('started_creating');
   show('s-style-select');
+}
+
+function handleReachUnlock() {
+  logFunnelEvent('reached_unlock');
+  show('s-plans');
 }
 
 // ═══════════════════════════════════════════════════════
@@ -668,6 +727,14 @@ function handleAgree() {
 // ═══════════════════════════════════════════════════════
 window.onload = async () => {
   initializePwaInstallPrompts();
+  // Only log a fresh 'landed' event if this is a brand-new visitor arriving
+  // straight at the app (no prior visitor_id in localStorage yet). Someone
+  // who clicked through from the marketing page already has a visitor_id
+  // and a 'landed' event logged there - this avoids double-counting the
+  // same visit as two separate landings.
+  if (!localStorage.getItem(VISITOR_ID_KEY)) {
+    logFunnelEvent('landed');
+  }
   try {
     POSTER_STYLES = await loadPosterStylesWithRetry();
   } catch (err) {
@@ -1555,7 +1622,7 @@ async function startCheckout(priceId) {
         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
         'apikey': SUPABASE_ANON_KEY,
       },
-      body: JSON.stringify({ priceId }),
+      body: JSON.stringify({ priceId, visitorId: getVisitorId(), source: getVisitorSource() }),
     });
     if (!res.ok) {
       const bodyText = await res.text();
