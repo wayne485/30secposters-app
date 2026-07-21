@@ -115,7 +115,7 @@ button { font-family: inherit; }
 #preview-canvas { width: auto; height: auto; max-width: 260px; max-height: 42vh; display: block; border-radius: 14px; margin: 0 auto; }
 
 /* ---------- Unlock (watermarked reveal) ---------- */
-#unlock-canvas { width: auto; height: auto; max-width: 300px; max-height: 62vh; display: block; border-radius: 14px; margin: 0 auto; }
+#unlock-canvas { width: auto; height: auto; max-width: 240px; max-height: 46vh; display: block; border-radius: 14px; margin: 0 auto; }
 #s-unlock .unlock-copy { text-align:center; display:flex; flex-direction:column; gap:4px; }
 #s-unlock .unlock-title { color:#FFD700; font-size:20px; line-height:1.15; font-weight:900; text-transform:uppercase; letter-spacing:0.02em; }
 #s-unlock .unlock-subtitle { color:#fff; font-size:16px; line-height:1.3; font-weight:800; }
@@ -123,7 +123,16 @@ button { font-family: inherit; }
    represents a second, alternate decision (not just another item in a
    button stack), so it needs to visually separate itself from "Choose
    Your Plan" rather than crowd directly underneath it. */
-.restore-access-zone { width:100%; max-width:480px; margin-top:12px; padding-top:12px; }
+.restore-access-zone { width:100%; max-width:480px; margin-top:12px; padding-top:12px; display:flex; flex-direction:column; align-items:center; gap:8px; }
+.restore-access-label { color:#00D5FF; font-size:14px; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; }
+.restore-access-explainer { color:#fff; font-size:16px; line-height:1.3; font-weight:800; text-align:center; }
+.btn-restore-access {
+  width: 100%; max-width: 480px; padding: 15px;
+  background: #00D5FF; color: #000; border: none; border-radius: 12px;
+  font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;
+  cursor: pointer;
+}
+.btn-restore-access:active { background: #00A8CC; }
 
 /* ---------- Pricing plans ---------- */
 #s-plans { gap: 12px; }
@@ -420,7 +429,9 @@ button { font-family: inherit; }
   </div>
   <button class="btn-gold" onclick="handleReachUnlock()">Choose Your Plan</button>
   <div class="restore-access-zone">
-    <button class="btn-sec" onclick="handleRestoreAccessClick()">Already on a Plan? Restore Access</button>
+    <div class="restore-access-label">Already on a Plan?</div>
+    <div class="restore-access-explainer">The web browser doesn't remember you</div>
+    <button class="btn-restore-access" onclick="handleRestoreAccessClick()">Restore Your Access</button>
   </div>
   <button class="btn-sec" onclick="show('s-position')">← Back to Adjust Photo</button>
 </div>
@@ -433,7 +444,11 @@ button { font-family: inherit; }
   </div>
   <input type="email" id="restore-email-input" placeholder="you@example.com"
          style="width:100%;max-width:480px;padding:16px;border-radius:12px;border:2px solid #333;background:#1a1a1a;color:#fff;font-size:16px;box-sizing:border-box;">
-  <p id="restore-access-status" style="color:#fff;font-size:14px;text-align:center;display:none;max-width:480px;line-height:1.4;"></p>
+  <div id="restore-access-status" style="display:none;max-width:480px;text-align:center;">
+    <p style="color:#fff;font-size:19px;font-weight:800;line-height:1.35;margin:0 0 10px;">If that email has an active plan, we've sent a link to restore access.</p>
+    <p style="color:#00D5FF;font-size:19px;font-weight:900;line-height:1.35;margin:0 0 4px;">Check your email.</p>
+    <p style="color:#00D5FF;font-size:19px;font-weight:900;line-height:1.35;margin:0;">Check your spam folder.</p>
+  </div>
   <p id="restore-access-error" style="color:#ff6b6b;font-size:13px;text-align:center;display:none;"></p>
   <button class="btn-gold" id="restore-access-submit-btn" onclick="submitRestoreAccessRequest()">Send My Access Link</button>
   <button class="btn-sec" onclick="show('s-unlock')">← Back</button>
@@ -787,8 +802,7 @@ async function submitRestoreAccessRequest() {
       },
       body: JSON.stringify({ email }),
     });
-    const data = await res.json();
-    statusEl.textContent = data.message || 'If that email has an active plan, we\'ve sent a link to restore access.';
+    await res.json();
     statusEl.style.display = 'block';
   } catch (e) {
     console.error('Restore access request failed:', e);
