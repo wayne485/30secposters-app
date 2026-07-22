@@ -18,6 +18,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
   header a.brand {
     color: #00D5FF;
@@ -71,8 +75,16 @@
 <body>
 <header>
   <a class="brand" href="https://30secposters.com/">30secPosters</a>
-  <a class="back" href="https://30secposters.com/">Back to app</a>
+  <a class="back" id="back-link" href="https://30secposters.com/">Back to app</a>
 </header>
+<script>
+  document.getElementById('back-link').addEventListener('click', function (e) {
+    if (window.history.length > 1 && document.referrer.indexOf('30secposters.com') !== -1) {
+      e.preventDefault();
+      window.history.back();
+    }
+  });
+</script>
 <main>
 <h1 id="secposters-terms-of-use">30secPosters Terms of Use</h1>
 <p><strong>Last Updated:</strong> July 2026</p>
