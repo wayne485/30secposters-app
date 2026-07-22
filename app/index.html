@@ -456,6 +456,7 @@ button { font-family: inherit; }
 
 <!-- PLANS (pricing) -->
 <div class="screen" id="s-plans">
+  <p id="renewal-info-banner" style="display:none;color:#00D5FF;font-size:14px;font-weight:800;text-align:center;max-width:480px;line-height:1.4;margin-bottom:4px;"></p>
   <p class="plans-line1">Create Unlimited Posters</p>
   <p class="plans-line2">No Recurring Subscriptions</p>
   <p class="plans-guarantee"><span class="shield" aria-hidden="true">🛡</span><span>Money Back Guarantee</span></p>
@@ -545,6 +546,8 @@ const CREATE_CHECKOUT_URL = SUPABASE_URL + "/functions/v1/rapid-endpoint";
 const VERIFY_SESSION_URL = SUPABASE_URL + "/functions/v1/verify-session";
 const REQUEST_RESTORE_URL = SUPABASE_URL + "/functions/v1/request-restore-access";
 const VERIFY_RESTORE_URL = SUPABASE_URL + "/functions/v1/verify-restore-token";
+const VERIFY_RENEWAL_URL = SUPABASE_URL + "/functions/v1/verify-renewal-token";
+let activeRenewalToken = null; // set once a renewal link is verified, threaded into checkout
 const ACCESS_STORAGE_KEY = "poster_access";
 const PENDING_STORAGE_KEY = "poster_pending";
 
@@ -845,6 +848,7 @@ window.onload = async () => {
   const returningSessionId = params.get('session_id');
   const cancelled = params.get('payment') === 'cancelled';
   const restoreToken = params.get('restore_token');
+  const renewToken = params.get('renew_token');
 
   if (returningSessionId) {
     await handleReturnFromCheckout(returningSessionId);
@@ -853,6 +857,11 @@ window.onload = async () => {
 
   if (restoreToken) {
     await handleReturnFromRestoreToken(restoreToken);
+    return;
+  }
+
+  if (renewToken) {
+    await handleRenewalLink(renewToken);
     return;
   }
 
@@ -971,6 +980,56 @@ async function handleReturnFromRestoreToken(token) {
   }
 
   show('s-preview');
+}
+
+// ═══════════════════════════════════════════════════════
+// RENEWAL LINK
+// ═══════════════════════════════════════════════════════
+async function handleRenewalLink(token) {
+  history.replaceState({}, '', window.location.pathname);
+  show('s-splash');
+  showGlobalLoading('Checking your plan...');
+
+  let result;
+  try {
+    const res = await fetch(VERIFY_RENEWAL_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'apikey': SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({ token }),
+    });
+    result = await res.json();
+  } catch (e) {
+    console.error('Could not verify renewal token:', e);
+    result = { success: false, message: 'Something went wrong. Please try again.' };
+  }
+
+  hideGlobalLoading();
+
+  if (!result.success) {
+    alert(result.message || 'This renewal link is not valid. Please request a new one.');
+    if (localStorage.getItem('poster_consent') === '1') { show('s-style-select'); } else { show('s-agree'); }
+    return;
+  }
+
+  activeRenewalToken = token;
+
+  const banner = document.getElementById('renewal-info-banner');
+  if (banner) {
+    const expiresText = result.currentExpiresAt
+      ? new Date(result.currentExpiresAt).toLocaleDateString('en-NZ', { day: 'numeric', month: 'long', year: 'numeric' })
+      : null;
+    const tierText = result.currentTier ? result.currentTier.charAt(0).toUpperCase() + result.currentTier.slice(1) : null;
+    banner.textContent = tierText && expiresText
+      ? `Renewing ${result.maskedEmail} - current plan: ${tierText}, ends ${expiresText}. Your new plan adds on top, nothing is lost.`
+      : `Renewing ${result.maskedEmail}.`;
+    banner.style.display = 'block';
+  }
+
+  show('s-plans');
 }
 
 function buildStyleGrid() {
@@ -1772,7 +1831,7 @@ async function startCheckout(priceId) {
         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
         'apikey': SUPABASE_ANON_KEY,
       },
-      body: JSON.stringify({ priceId, visitorId: getVisitorId(), source: getVisitorSource() }),
+      body: JSON.stringify({ priceId, renewalToken: activeRenewalToken, visitorId: getVisitorId(), source: getVisitorSource() }),
     });
     if (!res.ok) {
       const bodyText = await res.text();
