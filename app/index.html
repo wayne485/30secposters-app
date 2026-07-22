@@ -44,7 +44,7 @@ button { font-family: inherit; }
 
 /* ---------- Agree / terms screen ---------- */
 #s-agree { gap:14px; padding:14px 24px 20px; text-align:center; justify-content:flex-start; }
-#s-agree .logo-container { width:100%; max-width:160px; margin:8px auto 2px; display:flex; align-items:center; justify-content:center; }
+#s-agree .logo-container { width:100%; max-width:270px; margin:8px auto 2px; display:flex; align-items:center; justify-content:center; }
 #s-agree .logo-img { width:100%; height:auto; object-fit:contain; }
 #s-agree h1 { font-size:24px; font-weight:900; line-height:1.2; text-transform:uppercase; letter-spacing:0.02em; padding:0 10px; text-align:center; margin-top:2px; }
 #s-agree h1 span { color:#00D5FF; }
@@ -78,7 +78,7 @@ button { font-family: inherit; }
 /* ---------- Upload ---------- */
 #s-upload p { font-size: 18px; font-weight: 700; text-align: center; line-height: 1.5; max-width: 480px; }
 #s-upload .gold-line { color: #00D5FF; }
-.upload-preview-img { width: auto; height: auto; max-width: 420px; max-height: 57vh; border-radius: 14px; display: block; margin-bottom: 8px; }
+.upload-preview-img { width: auto; height: auto; max-width: 340px; max-height: 44vh; border-radius: 14px; display: block; margin-bottom: 8px; }
 
 /* ---------- Text entry ---------- */
 .input-group { width: 100%; max-width: 480px; text-align: left; }
@@ -354,7 +354,7 @@ button { font-family: inherit; }
   </div>
   <h1>Create personalised<br>posters in<br><span style="color:#00D5FF">30 seconds</span></h1>
   <div class="privacy-block">
-    Your photos are used only to<br>create your poster.<br>They are not permanently stored.
+    Your photos are used only to create your poster.<br>They are not permanently stored.
   </div>
   <button id="agree-btn" onclick="handleAgree()">I Agree<br>Create Poster</button>
   <p class="terms-note">By tapping 'I Agree', you confirm that you are 18 years or older, that you have permission to use the photos you upload, and that you have the necessary consent to use images of any minors. You agree to our Terms of Use and Privacy Policy.</p>
@@ -374,7 +374,7 @@ button { font-family: inherit; }
 <!-- UPLOAD -->
 <div class="screen" id="s-upload">
   <img id="upload-style-preview" class="upload-preview-img" alt="Selected poster style">
-  <p><span class="gold-line">Upload your photo.</span><br>We'll automatically remove the background.</p>
+  <p><span class="gold-line">Upload your photo.</span><br>Use a photo you took.<br>No screenshots or<br>WhatsApp/Social Media images.</p>
   <input type="file" id="file-input" accept="image/*" style="display:none;">
   <button class="btn-gold" onclick="document.getElementById('file-input').click()">Choose Photo</button>
   <button class="btn-sec" onclick="show('s-style-select')">← Back</button>
