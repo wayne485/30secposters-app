@@ -79,6 +79,7 @@ button { font-family: inherit; }
 #s-upload p { font-size: 18px; font-weight: 700; text-align: center; line-height: 1.5; max-width: 480px; }
 #s-upload .gold-line { color: #00D5FF; }
 #s-upload .upload-line-big { font-size: 23px; }
+#s-upload .upload-line-yellow { color: #FFD700; }
 .upload-preview-img { width: auto; height: auto; max-width: 340px; max-height: 44vh; border-radius: 14px; display: block; margin-bottom: 8px; }
 
 /* ---------- Text entry ---------- */
@@ -375,7 +376,7 @@ button { font-family: inherit; }
 <!-- UPLOAD -->
 <div class="screen" id="s-upload">
   <img id="upload-style-preview" class="upload-preview-img" alt="Selected poster style">
-  <p><span class="gold-line upload-line-big">Upload your photo.</span><br><span class="upload-line-big">Use a photo you took.</span><br>No screenshots or<br>WhatsApp/Social Media images.</p>
+  <p><span class="gold-line upload-line-big">Upload your photo.</span><br><span class="upload-line-big upload-line-yellow">Use a photo you took.</span><br>No screenshots or<br>WhatsApp/Social Media images.</p>
   <input type="file" id="file-input" accept="image/*" style="display:none;">
   <button class="btn-gold" onclick="document.getElementById('file-input').click()">Choose Photo</button>
   <button class="btn-sec" onclick="show('s-style-select')">← Back</button>
