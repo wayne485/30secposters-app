@@ -914,15 +914,25 @@ async function handleReturnFromCheckout(sessionId) {
   }
 
   storeAccess(result.tier, result.email, result.expiresAt);
+  const wasRenewal = !!activeRenewalToken;
+  activeRenewalToken = null;
 
   const restored = await restorePendingPosterState();
   hideGlobalLoading();
   if (!restored) {
-    // Payment succeeded but we couldn't recover the in-progress poster
-    // (e.g. they cleared browser storage mid-checkout). Access is saved,
-    // so a fresh poster they make now goes straight through unlocked --
-    // just can't hand back the exact one they were making before.
-    alert('Payment confirmed! We could not recover your in-progress poster, but you are unlocked -- please create your poster again.');
+    if (wasRenewal) {
+      // Renewal links skip poster creation entirely - there was never a
+      // poster made this session to restore, so this isn't a recovery
+      // failure, it's just the expected outcome. Different wording,
+      // not "something went wrong".
+      alert("Payment confirmed! Your plan has been extended. Head into the app to start creating.");
+    } else {
+      // Payment succeeded but we couldn't recover the in-progress poster
+      // (e.g. they cleared browser storage mid-checkout). Access is saved,
+      // so a fresh poster they make now goes straight through unlocked --
+      // just can't hand back the exact one they were making before.
+      alert('Payment confirmed! We could not recover your in-progress poster, but you are unlocked -- please create your poster again.');
+    }
     show('s-style-select');
     return;
   }
