@@ -168,6 +168,10 @@
       font-size: clamp(32px, 8vw, 56px);
     }
 
+    #skills-heading {
+      font-size: clamp(42px, 9vw, 76px);
+    }
+
     .carousel-wrap {
       margin-top: 22px;
       position: relative;
@@ -648,6 +652,17 @@
       line-height: 0.9;
     }
 
+    .final-cta-line1 {
+      white-space: nowrap;
+      font-size: clamp(28px, 8vw, 56px);
+    }
+
+    .final-cta-image {
+      max-width: min(80%, 420px);
+      margin: 24px auto;
+      border-radius: var(--radius);
+    }
+
     .site-footer {
       margin-top: 0;
       padding: 0 0 calc(18px + env(safe-area-inset-bottom));
@@ -762,7 +777,7 @@
             <article class="poster-card"><img src="menu/menu_our_house.jpg" alt="Our House personalised poster example"></article>
           </div>
           <p class="swipe-cue"><span>←</span> Swipe to see more <span>→</span></p>
-          <p class="styles-note">Start with one. You'll soon have a collection.</p>
+          <p class="styles-note">Start with one<br>You'll soon have a collection.</p>
         </div>
       </div>
     </section>
@@ -777,7 +792,7 @@
             <p class="check-line"><span class="tick">✓</span><span>Upload a photo</span></p>
             <p class="check-line"><span class="tick">✓</span><span>Type a name</span></p>
             <p class="check-line"><span class="tick">✓</span><span>Pick a colour</span></p>
-            <p class="check-line"><span class="tick">✓</span><span>Do the pinchy zoomy thing on the photo</span></p>
+            <p class="check-line"><span class="tick">✓</span><span>Pinch and zoom a photo</span></p>
           </div>
           <p class="create-conclusion">You can create a poster</p>
         </div>
@@ -798,6 +813,7 @@
           <span class="photo-copy-white">Instant Download</span>
           <span class="photo-copy-white">Print up to</span>
           <span class="photo-copy-emphasis">A3 / Ledger</span>
+          <span class="photo-copy-white">for the bedroom wall</span>
         </p>
       </div>
     </section>
@@ -821,7 +837,7 @@
         <div class="pricing-intro">
           <h2 class="pricing-line1" id="pricing-heading">Create Unlimited Posters<br>Whenever You Want</h2>
           <p class="pricing-line2">No Recurring Subscriptions</p>
-          <p class="pricing-guarantee"><span aria-hidden="true">🛡</span><span>Money Back Guarantee</span></p>
+          <p class="pricing-guarantee"><span aria-hidden="true">🛡</span><span>14 Day Money Back Guarantee</span></p>
         </div>
 
         <div class="pricing-grid">
@@ -889,18 +905,9 @@
 
     <section class="final-cta">
       <div class="site-shell">
-        <h2 class="section-heading"><span class="white">The poster's for them.</span><br><span class="white">But that smile...</span><br><span class="yellow-text">that's for you.</span></h2>
-        <section class="section compact-section trust-section" aria-labelledby="trust-heading">
-      <div class="site-shell">
-        <div class="trust-grid">
-          <div class="trust-item"><span class="trust-icon">✓</span><span>Create unlimited posters</span></div>
-          <div class="trust-item"><span class="trust-icon">✓</span><span>Print for their bedroom</span></div>
-          <div class="trust-item"><span class="trust-icon">✓</span><span>Share on social media</span></div>
-          <div class="trust-item"><span class="trust-icon">✓</span><span>No recurring subscriptions</span></div>
-          <div class="trust-item"><span class="trust-icon">✓</span><span>14 Day Money Back Guarantee</span></div>
-        </div>
-      </div>
-    </section>
+        <h2 class="section-heading final-cta-line1"><span class="white">The poster's for them.</span></h2>
+        <img class="final-cta-image" src="cahal_smiling.jpg" alt="A smiling boy holding his personalised football poster">
+        <h2 class="section-heading"><span class="white">But that smile...</span><br><span class="yellow-text">that's for you.</span></h2>
         <div class="cta-zone"><a class="primary-cta app-link" href="https://30secposters.com/app/">Create Their Hero Poster</a></div>
       </div>
     </section>
