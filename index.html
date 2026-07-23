@@ -327,12 +327,13 @@
     .create-conclusion {
       margin-top: 14px;
       font-family: "Bebas Neue", sans-serif;
-      font-size: clamp(42px, 9vw, 76px);
+      font-size: clamp(24px, 9vw, 76px);
       font-weight: 400;
       line-height: 1;
       text-align: center;
       text-transform: uppercase;
       letter-spacing: 0.01em;
+      white-space: nowrap;
     }
 
     .center {
@@ -431,20 +432,16 @@
 
     .pricing-grid {
       width: min(100%, 440px);
-      margin: 28px auto 0;
+      margin: 22px auto 0;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 12px;
     }
 
     .pricing-card {
       position: relative;
-      overflow: hidden;
       width: 100%;
-      background: #141414;
-      border: 2px solid #2a2a2a;
-      border-radius: 16px;
-      padding: 18px;
+      padding: 6px 18px;
       text-align: center;
     }
 
@@ -456,7 +453,7 @@
     }
 
     .pricing-price {
-      margin-top: 7px;
+      margin-top: 4px;
       font-size: 28px;
       line-height: 1.15;
       font-weight: 900;
@@ -468,7 +465,7 @@
     }
 
     .pricing-starter {
-      border-color: #9CA3AF;
+      color: #9CA3AF;
     }
 
     .pricing-starter h3,
@@ -478,9 +475,7 @@
     }
 
     .pricing-pro {
-      padding: 28px 20px 21px;
-      border: 3px solid var(--yellow);
-      box-shadow: 0 0 24px rgba(255, 215, 0, 0.20);
+      padding: 6px 18px;
     }
 
     .pricing-pro h3 {
@@ -494,7 +489,7 @@
     }
 
     .pricing-vip {
-      border-color: #C8A24A;
+      color: #C8A24A;
     }
 
     .pricing-vip h3,
@@ -504,32 +499,39 @@
     }
 
     .pricing-ribbon {
-      position: absolute;
-      top: 22px;
-      right: -58px;
-      width: 205px;
-      padding: 9px 0;
-      background: var(--yellow);
-      color: #000000;
-      transform: rotate(45deg);
-      font-size: 12px;
-      line-height: 1.05;
-      font-weight: 900;
+      color: var(--yellow);
+      font-size: 13px;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.045em;
-      text-align: center;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.38);
-      pointer-events: none;
-      z-index: 2;
+      letter-spacing: 0.03em;
+      margin-bottom: 2px;
     }
 
-    .pricing-unlock-copy {
+    .pricing-steps {
       margin-top: var(--section-gap);
       color: #ffffff;
       text-align: center;
       font-size: clamp(18px, 4.4vw, 24px);
-      line-height: 1.25;
       font-weight: 850;
+    }
+
+    .pricing-steps p {
+      margin-top: 6px;
+    }
+
+    .pricing-steps p:first-child {
+      margin-top: 0;
+    }
+
+    .pricing-steps-intro {
+      color: var(--yellow);
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(34px, 7.5vw, 54px);
+      font-weight: 400;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      margin-bottom: 4px;
     }
 
     .pricing-cta {
@@ -847,7 +849,7 @@
           </article>
 
           <article class="pricing-card pricing-pro">
-            <div class="pricing-ribbon">Most Popular</div>
+            <p class="pricing-ribbon">⭐ Most Popular ⭐</p>
             <h3>Pro</h3>
             <p class="pricing-price">$29.95 <span>/ 6 Months</span></p>
           </article>
@@ -858,9 +860,11 @@
           </article>
         </div>
 
-        <div class="pricing-unlock-copy">
-          <div style="color:var(--yellow);font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,8vw,62px);line-height:0.95;">TO UNLOCK YOUR PLAN</div>
-          <div style="color:#fff;font-size:clamp(18px,4.4vw,24px);font-weight:850;margin-top:8px;">Start Creating A Poster</div>
+        <div class="pricing-steps">
+          <p class="pricing-steps-intro">To Get Started</p>
+          <p>1. Create your first poster</p>
+          <p>2. Choose your plan</p>
+          <p>3. Download Poster</p>
         </div>
         <div class="pricing-cta">
           <a class="primary-cta app-link" href="https://30secposters.com/app/">Create Your First Poster</a>
